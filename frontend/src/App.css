@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.App-content {
+  width: 75%;
+  margin: auto;
+  height: 100%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

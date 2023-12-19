@@ -79,6 +79,10 @@ nav span {
   color: var(--light);
 }
 
+.logo-keyboard {
+  fill: var(--splash);
+}
+
 
 
 /* Style settings */

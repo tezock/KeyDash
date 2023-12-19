@@ -37,6 +37,32 @@ const getWordList = (quote) => {
     return wordList;
 }
 
+const updateCharStyling = (currIndex) => {
+
+    // update the styling for each character
+    const allChars = document.getElementById("test-characters").querySelectorAll('span');
+
+    allChars.forEach(
+        (characterSpan, index) => {
+            // only update styles if the character before is not a space to not change prev word.
+
+            
+            if (index == currIndex + 1) {
+                characterSpan.classList.remove('untyped', 'typed');
+                characterSpan.classList.add('current');
+            } 
+            else if (index < currIndex + 1) {
+                characterSpan.classList.remove('untyped', 'current');
+                characterSpan.classList.add('typed');
+            }
+            else {
+                characterSpan.classList.remove('typed', 'current');
+                characterSpan.classList.add('untyped');
+            }
+            
+        })
+}
+
 
 
 function TypingTest({ quote }) {
@@ -75,6 +101,7 @@ function TypingTest({ quote }) {
                 // Do work if the guess is wrong
 
             }
+            updateCharStyling(currIndex);
         }
 
         // Only decrement if the new string is shorter, it's not the first index,
@@ -82,28 +109,11 @@ function TypingTest({ quote }) {
         else if (newString.length < oldInputSize && currIndex > 0 && charList[currIndex - 1] != ' ') {
 
             decrement();
+            updateCharStyling(currIndex-2);
         }
 
         
-        // update the styling for each character
-        const allChars = document.getElementById("test-characters").querySelectorAll('span');
-
-        allChars.forEach(
-            (characterSpan, index) => {
-
-                if (index == currIndex) {
-                    characterSpan.classList.remove('untyped', 'typed');
-                    characterSpan.classList.add('current');
-                } 
-                else if (index < currIndex) {
-                    characterSpan.classList.remove('untyped', 'current');
-                    characterSpan.classList.add('typed');
-                }
-                else {
-                    characterSpan.classList.remove('typed', 'untyped');
-                    characterSpan.classList.add('untyped');
-                }
-            })
+        
         
         
         // perform final update to the input's size

@@ -1,5 +1,4 @@
 import logo from './logo.svg';
-import './App.css';
 
 import TypingBox from './components/TypingBox';
 import NavBar from './components/NavBar';
@@ -10,11 +9,12 @@ function App() {
   return (
     <div className="App">
       
-        <div className="App-content">
-          <NavBar/>
-          <Settings/>
-          <TypingBox />
-          <Footer />
+        <div className="app-box">
+          <div className="app-box-content">
+            <NavBar/>
+            <TypingBox />
+            <Footer />
+          </div>
         </div>
     </div>
   );

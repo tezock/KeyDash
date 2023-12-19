@@ -1,7 +1,7 @@
 
 function Footer() {
     return (
-      <div className="footer appItem">
+      <div className="footer app-section">
   
         Footer here
   

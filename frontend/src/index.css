@@ -1,14 +1,39 @@
 /* Variables */
 :root {
   --lightest: #e4e6eb;
-  --light: #e4e6eb;
-  --dark: #3a3b3c;
+  --light: #6d6d6e;
+  --dark: #2e2f30;
   --darkest: #242526;
   --splash: #ffbf00;
 }
 
 .App {
+  text-align: center;
+  height: 100vh;
+  width: 100vw;
   background-color: var(--dark);
+}
+
+.app-box {
+  width: 85%;
+  margin: auto;
+  height: 100%;
+}
+
+.app-box-content {
+  height: 100%;
+  width: 85%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-section {
+  margin: auto;
+}
+
+body, html {
+  margin: 0;
 }
 
 body {
@@ -17,6 +42,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: fixed;
 }
 
 /* Style the app items */
@@ -28,10 +54,9 @@ nav {
   margin: auto;
 }
 
-.nav-content {
+.nav-content {  
   height: 10vh;
   width: 100%;
-  border-radius: 5px;
   color: var(--lightest);
 }
 
@@ -39,16 +64,30 @@ nav .logo {
   font-size: 2rem;
   font-weight: bold;
 }
+
+nav span {
+  color: var(--splash);
+}
 /* Style TypingBox */
 
 .typingbox {
   background-color: var(--dark);
+  height: 50vh;
+  width: 100%;
+  font-size: 30px;
+  text-align: left; 
+  color: var(--light);
 }
+
+
 
 /* Style settings */
 
 .settings {
   width: 100%;
+  font-size: 20px;
+  text-align: center;
+  color: var(--splash);
 }
 
 .settings-content {
@@ -57,4 +96,31 @@ nav .logo {
   background-color: var(--darkest);
   border-radius: 7px;
   height: 5vh;
+}
+
+.footer {
+  height: 15vh;
+  width: 100%;
+}
+
+/* Styling the typing test */
+#hidden-text-box {
+  background-color: var(--dark);
+
+  /* Hides the text box */
+  width: 0px;
+  height: 0px;
+}
+
+.untyped {
+  color: var(--light);
+}
+
+.typed {
+  color: var(--lightest);
+}
+
+.current {
+  color: var(--splash);
+  text-decoration: underline;
 }

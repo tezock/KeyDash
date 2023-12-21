@@ -5,6 +5,7 @@
   --dark: #2e2f30;
   --darkest: #242526;
   --splash: #ffbf00;
+  --wrong: #d66258;
 }
 
 .App {
@@ -126,5 +127,10 @@ nav span {
 
 .current {
   color: var(--splash);
+  text-decoration: underline;
+}
+
+.incorrect {
+  color: var(--wrong);
   text-decoration: underline;
 }

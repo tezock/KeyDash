@@ -5,8 +5,8 @@
 KeyDash is a site inspired by [MonkeyType](https://monkeytype.com/) for the purpose of practicing
 fullstack development through a means that I find interesting: typing tests!
 
-Below in this README, I'm largely going to document my changes and progress as I continue to learn
-more about FullStack Development.
+Below in this README, I'm largely going to document my changes and progress as I continue to work on
+the site through each release.
 
 ### Version 1
 

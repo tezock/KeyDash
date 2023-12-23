@@ -7,13 +7,14 @@ import TypingTest from './TypingTest';
 function TypingBox() {
 
   const [quote, updateQuote] = useState({})
+  const [quoteLength, setQuoteLength] = useState(250)
 
-useEffect(
+  useEffect(
   () => {
 
     const getNewQuote = async () => {
       try {
-        const response = await fetch("https://api.quotable.io/random?minLength=250", {method: 'GET'})
+        const response = await fetch(`https://api.quotable.io/random?minLength=${quoteLength}`, {method: 'GET'})
         if (!response.ok) {
           throw new Error('Error loading quote. Try again later.');
         }
@@ -27,12 +28,13 @@ useEffect(
     };
 
     getNewQuote();
-    console.log(quote);
-  }, [])
-
+    
+    console.log("Got New Quote!")
+  }, [quoteLength])
+  
   return (
     <div className="typingbox app-section">
-      <Settings/>
+      <Settings setQuoteLength={setQuoteLength} />
       <TypingTest quote={quote} />
     </div>
   );

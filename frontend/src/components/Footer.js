@@ -3,7 +3,7 @@ function Footer() {
     return (
       <div className="footer app-section">
   
-        Footer here
+        {/* Footer will go here */}
   
       </div>
     );

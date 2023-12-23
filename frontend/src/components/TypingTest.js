@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * TODO:
@@ -109,6 +109,25 @@ const styleWrongCharTo = (currIndex) => {
     )
 }
 
+function calculateWPM(startTime, endTime, charactersTyped) {
+    // Calculate the total time in minutes
+    const totalTimeInSeconds = (endTime - startTime) / 1000; // Convert milliseconds to seconds
+    const totalTimeInMinutes = totalTimeInSeconds / 60;
+  
+    // Determine the total number of words typed
+    const wordsTyped = charactersTyped / 5 // average word length of 4.7
+    console.log(endTime - startTime);
+    console.log(endTime)
+    console.log(startTime)
+    console.log(wordsTyped);
+    // Calculate words per minute (WPM)
+    const wpm = Math.round((wordsTyped * 60 * 1000) / ((endTime - startTime)));
+  
+    return wpm;
+  }
+
+// stores the starting time.
+let startTime = Date.now();
 
 /**
  * Typing Test component.
@@ -185,11 +204,28 @@ function TypingTest({ quote }) {
         // perform final update to the input's size
         setInputSize(newString.length);
     }
+
+    if (currIndex === 1) {
+        startTime = Date.now();
+    }
+     
     
     if (charList === null) {
         return (
             <div className="typing-test">
                 Loading Quote.
+            </div>
+        )
+    }
+
+    // if the last index was reached, return the WPM and a button to do a new test.
+    if (currIndex === charList.length) {
+
+        return (
+            <div className="typing-test">
+                WPM: {calculateWPM(startTime, Date.now(), charList.length)}
+                <br/>
+                <button onClick={()=>(window.location.reload())}>New Test</button>
             </div>
         )
     }

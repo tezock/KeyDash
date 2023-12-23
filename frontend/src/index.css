@@ -78,6 +78,7 @@ nav span {
   font-size: 30px;
   text-align: left; 
   color: var(--light);
+  
 }
 
 .logo-keyboard {
@@ -133,4 +134,53 @@ nav span {
 .incorrect {
   color: var(--wrong);
   text-decoration: underline;
+}
+
+/* Dropdown Button Styling */
+.dropbtn {
+  background-color: var(--darkest);
+  color: var(--lightest);
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content button {
+  color: var(--lightest);
+  text-decoration: none;
+  display: block;
+  background-color: var(--darkest);
+  width: 100%;
+}
+
+.dropdown-content button:hover {
+  background-color: var(--dark);
+  color: var(--splash);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  color: var(--splash);
+}
+
+/* style the typing test */
+
+.typing-test {
+  margin-top: 5%;
 }

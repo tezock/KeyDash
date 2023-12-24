@@ -244,7 +244,8 @@ function TypingTest({ quote }) {
 
         <div className="typing-test">
             
-            {currIndex}
+            WPM: {calculateWPM(startTime, Date.now(), currIndex)}
+            {/* {currIndex} */}
             <br/>
 
             <label 

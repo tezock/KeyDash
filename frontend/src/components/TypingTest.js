@@ -253,47 +253,50 @@ function TypingTest({ quote, setTestCompletion }) {
             {/* {currIndex} */}
             <br/>
 
-            <label 
-                for="hidden-text-box" 
-                id="test-characters"
-            >
+            <div id="carat"></div>
 
-                {
-                    charList.map(
-                        (item, index) => {
+            <div className="test-characters">
+                <label 
+                    for="hidden-text-box" 
+                    id="test-characters"
+                >
 
-                            if (index === 0) {
+                    {
+                        charList.map(
+                            (item, index) => {
+
+                                if (index === 0) {
+                                    return (
+                                        <span 
+                                            key={index}
+                                            className="current"
+                                        >
+                                            {item}
+                                        </span>
+                                    )
+                                }
                                 return (
-                                    <span 
-                                        key={index}
-                                        className="current"
-                                    >
-                                        {item}
-                                    </span>
-                                )
-                            }
-                            return (
-                            <span 
-                                key={index}
-                                className="untyped"
-                            >
-                                {item}
-                            </span>
-                        )}
-                    )
-                }
+                                <span 
+                                    key={index}
+                                    className="untyped"
+                                >
+                                    {item}
+                                </span>
+                            )}
+                        )
+                    }
 
-            </label>
+                </label>
 
-            <input 
-                id="hidden-text-box" 
-                width="0" 
-                height="0" 
-                type="text" 
-                value={inputValue} 
-                onChange={handleInputChange}
-            />
-            
+                <input 
+                    id="hidden-text-box" 
+                    width="0" 
+                    height="0" 
+                    type="text" 
+                    value={inputValue} 
+                    onChange={handleInputChange}
+                />
+            </div>
         </div>
 
     );

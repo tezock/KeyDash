@@ -1,3 +1,6 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
 /* Variables */
 :root {
   --lightest: #e4e6eb;
@@ -39,7 +42,7 @@ body, html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -58,7 +61,7 @@ nav {
 
 .nav-content {  
   height: 10vh;
-  width: 85%;
+  width: 90%;
   color: var(--lightest);
   display: flex;
   flex-direction: row;
@@ -116,8 +119,18 @@ nav .page-links {
 
 /* Style typing test */
 
-.typing-test {
-  
+.test-characters {
+  line-height: 40px;
+  height: 120px;
+  overflow: hidden;
+  margin-top: 0px;
+}
+
+#carat {
+  width: 2px;
+  height: 35px;
+  background-color: var(--splash);
+  position: relative;
 }
 
 /* Style settings */

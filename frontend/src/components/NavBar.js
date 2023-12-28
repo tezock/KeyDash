@@ -28,8 +28,11 @@ function NavBar() {
               <NavLink to="/n" className="nav-link">
                 Time
               </NavLink>
+              <NavLink to="/n" className="nav-link">
+                Priority
+              </NavLink>
               <NavLink to="/" className="nav-link">
-                AI Passage
+                AI
               </NavLink>
               <NavLink to="/" className="nav-link">
                 Race

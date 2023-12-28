@@ -2,7 +2,8 @@ import React from 'react';
 
 import { useState, useEffect } from 'react';
 import Settings from './Settings';
-import TypingTest from './TypingTest';
+//import TypingTest from './TypingTest2';
+import TypingTest2 from './TypingTest2';
 
 function TypingBox() {
 
@@ -35,7 +36,7 @@ function TypingBox() {
   return (
     <div className="typingbox app-section">
       <Settings setQuoteLength={setQuoteLength} />
-      <TypingTest quote={quote} />
+      <TypingTest2 quote={quote} />
     </div>
   );
 }

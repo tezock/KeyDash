@@ -10,9 +10,8 @@ function NavBar() {
         <div className="nav-content">
 
             <div className="logo">
-                {faKeyboard}
-                
                 <div className="logo-text">
+                  {faKeyboard}
                   KeyDash
                 </div>
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import Settings from './Settings';
 import TypingTest from './TypingTest';
+import TypingTest2 from './TypingTest2';
 
 function QuoteTest() {
 
@@ -37,7 +38,7 @@ function QuoteTest() {
   return (
     <div className="typingbox app-section">
       <Settings setQuoteLength={setQuoteLength} />
-      <TypingTest quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} />
+      <TypingTest2 quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} />
     </div>
   );
 }

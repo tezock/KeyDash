@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 /**
  * TODO:
@@ -40,6 +40,27 @@ const getCharList = (quote) => {
     
     return charList;
 }
+/**
+ * Returns a list representing each word in a received quote.
+ * @param {object} quote - quote response object
+ * @returns {list} - the list of each character
+ */
+const getWordList = (quote) => {
+
+    const quoteText = quote.content;
+
+    // return null if the request was invalid
+    if (quoteText === null || quoteText === undefined) {
+        return null;
+    }
+    
+    // split the quote to get each character
+    const wordList = quoteText.split(" ");
+    
+    return wordList;
+}
+
+
 
 /**
  * Updates the styling of each character when the user correctly progresses in the typing test.
@@ -109,6 +130,14 @@ const styleWrongCharTo = (currIndex) => {
     )
 }
 
+function formatWord(word) {
+
+    console.log(word.split(''));
+    return word.split('').map((item) => {
+        return (<span className="letter">{item}</span>);
+    })
+}
+
 function calculateWPM(startTime, endTime, charactersTyped) {
     // Calculate the total time in minutes
     const totalTimeInSeconds = (endTime - startTime) / 1000; // Convert milliseconds to seconds
@@ -123,7 +152,32 @@ function calculateWPM(startTime, endTime, charactersTyped) {
     return wpm;
   }
 
+// function getCharObjects(charList, currIndex) {
 
+//     const resultArray = [];
+
+//     if (charList === undefined || charList === null) {
+//         return null;
+//     }
+
+//     for (let i = 0; i < charList.length; i++) {
+        
+//         let currObj = {
+//             char: charList[i],
+//             index: i,
+//             wrong: false,
+//             extra: false,
+//             class: "untyped"
+//         };
+        
+//         resultArray.push(currObj);
+//     }
+
+    
+//     resultArray[currIndex].class = "current";
+
+//     return resultArray;
+// }
 
 // stores the starting time.
 let startTime = Date.now();
@@ -133,18 +187,16 @@ let startTime = Date.now();
  * @param {object} quote - quote object
  * @returns typing test component
  */
-function TypingTest({ quote, setTestCompletion }) {
+function TypingTest2({ quote, setTestCompletion }) {
 
-    // updates the current index through the quote
+    
+    
     const [currIndex, updateIndex] = useState(0);
 
-    // stores the current values typed by the user
-    const [inputValue, updateInputValue] = useState('');
-
-    // stores the current size of the 'hidden input' box for comparison.
-    const [oldInputSize, setInputSize] = useState(0);
-
+    // remember to delete
     const charList = getCharList(quote);
+    
+    const wordList = getWordList(quote);
 
     /**
      * Increment the state index variable.
@@ -159,50 +211,53 @@ function TypingTest({ quote, setTestCompletion }) {
     const decrement = () => {
         updateIndex(() => currIndex - 1);
     }
-
-    /**
-     * Handle when the input box changes
-     * @param {event} event 
-     */
-    const handleInputChange = (event) => {
-
-        // store the current value in the input box
-        const newString = event.target.value;
-
-        // update the 'hidden text box's input value
-        updateInputValue(newString);
+    console.log(currIndex);
+    const handleKeyDown = (event) => {
         
-        // if a new character was added, do work
-        if (newString.length > oldInputSize) {
+        // // handle backspace
+        // const isBackspace = event.key === "Backspace";
 
-            // if user typed the correct character, increment the index and update the styling.
-            if (newString.charAt(newString.length - 1) === charList[currIndex]) {
+        // // Check if the pressed key is alphanumeric (including space w/ generality)
+        // const isAlphanumeric = /^[a-zA-Z0-9\s]$/.test(event.key);
+        
+        // // handle correct character
+        // const isCorrectCharacter = event.key === charObjects[currIndex].char;
 
-                increment();
-                styleCurrIndexTo(currIndex+1);
-            }
+        // console.log("current Index: " + currIndex);
+        // console.log("event: " + event.key);
 
-            // if user typed the wrong character, do not increment the index and update the styling.
-            else {
-                
-                styleWrongCharTo(currIndex);
-            }
+        // console.log("correct: " + charObjects[currIndex].char);
+
+        // console.log("Did you type right thing:" + isCorrectCharacter);
+
+        // if (isAlphanumeric) {
+
+        //     // if we have reached the correct character, update styling.
+        //     if (isCorrectCharacter) {
+        //         // console.log("shifted!");
+        //         // charObjects[currIndex].class = "typed";
+        //         // charObjects[currIndex + 1].class = "current";
+        //         increment();
+        //     }
+
+        //     // update styling if we make an incorrect guess
+        //     else {
             
-        }
-
-        // Only decrement index if the new string is shorter (backspace), it's not the first index,
-        // and the first character is not a space. This avoids going back to the previous word.
-        else if (newString.length < oldInputSize && currIndex > 0 && charList[currIndex - 1] !== ' ') {
-
-            decrement();
-
-            // update the character styling for currIndex - 2, 
-            styleCurrIndexTo(currIndex-1);
-        }
-
-        // perform final update to the input's size
-        setInputSize(newString.length);
+        //         charObjects[currIndex].class = "incorrect";
+        //     }
+        // }
     }
+
+    useEffect(
+        () => {
+            document.addEventListener("keydown", handleKeyDown);
+            
+            return () => {
+                document.removeEventListener("keydown", handleKeyDown);
+            };
+        },
+        []
+    )
 
     function resetTest() {
 
@@ -249,59 +304,38 @@ function TypingTest({ quote, setTestCompletion }) {
 
         <div className="typing-test">
             
-            WPM: {calculateWPM(startTime, Date.now(), currIndex)}
-            {/* {currIndex} */}
+            {/* WPM: {calculateWPM(startTime, Date.now(), currIndex)} */}
+            {currIndex}
             <br/>
 
-            {/* <div id="carat"></div> */}
-            Hi!
-            <div className="test-characters">
+            
+            
+            <div className="test-characters" tabIndex="0">
                 <div className="test-characters-content">
-                    {/* <label 
-                        for="hidden-text-box" 
-                        id="test-characters"
-                    >  */}
-                    
-                        {
-                            charList.map(
-                                (item, index) => {
 
-                                    if (index === 0) {
-                                        return (
-                                            <span 
-                                                key={index}
-                                                className="current"
-                                            >
-                                                {item}
-                                            </span>
-                                        )
-                                    }
-                                    return (
-                                    <span 
-                                        key={index}
-                                        className="untyped"
+                    {
+                        wordList.map(
+                            (item, index) => {
+
+                                return (
+                                    <div 
+                                        className="word"
                                     >
-                                        {item}
-                                    </span>
-                                )}
-                            )
-                        }
-
-                    {/* </label>
-
-                    <input 
-                        id="hidden-text-box" 
-                        width="0" 
-                        height="0" 
-                        type="text" 
-                        value={inputValue} 
-                        onChange={handleInputChange}
-                    /> */}
+                                        {formatWord(item)}
+                                    </div>
+                                )
+                            
+                            }
+                        )
+                    }
                 </div>
+                <div id="carat">Hi</div>
+                <div id="focus-error">Click here to focus</div>
             </div>
+            
         </div>
 
     );
 }
 
-export default TypingTest
+export default TypingTest2;

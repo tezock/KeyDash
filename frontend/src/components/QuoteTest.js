@@ -1,13 +1,14 @@
 import React from 'react';
 
 import { useState, useEffect } from 'react';
-import Settings from './settings';
+import Settings from './Settings';
 import TypingTest from './TypingTest';
 
-function TypingBox() {
+function QuoteTest() {
 
-  const [quote, updateQuote] = useState({})
-  const [quoteLength, setQuoteLength] = useState(250)
+  const [quote, updateQuote] = useState({});
+  const [quoteLength, setQuoteLength] = useState(250);
+  const [isTestCompleted, setTestCompletion] = useState(false);
 
   useEffect(
   () => {
@@ -28,16 +29,17 @@ function TypingBox() {
     };
 
     getNewQuote();
-    
+    setTestCompletion(false);
+
     console.log("Got New Quote!")
-  }, [quoteLength])
+  }, [quoteLength, isTestCompleted])
   
   return (
     <div className="typingbox app-section">
       <Settings setQuoteLength={setQuoteLength} />
-      <TypingTest quote={quote} />
+      <TypingTest quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} />
     </div>
   );
 }
 
-export default TypingBox;
+export default QuoteTest;

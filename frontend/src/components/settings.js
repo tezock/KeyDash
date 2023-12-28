@@ -16,17 +16,24 @@ function Settings( {setQuoteLength} ) {
 
 
     return (
-      <nav className="settings app-section">
+      <nav className="settings">
         
         <div className="settings-content">
-          <div class="dropdown">
-            <button class="dropbtn">Quote Length</button>
-            <div class="dropdown-content">
+          {/* <div className="dropdown">
+            <button className="dropbtn">Quote Length</button>
+            <div className="dropdown-content">
               <button onClick={handle50}>short</button>
               <button onClick={handle125}>medium</button>
               <button onClick={handle250}>long</button>
             </div>
-          </div>
+          </div>  */}
+
+          <button className="setting-item">Quote Length</button>
+          <div className="vertical-rule"></div>
+          <button className="setting-item" onClick={handle50}>short</button>
+          <button className="setting-item" onClick={handle125}>medium</button>
+          <button className="setting-item" onClick={handle250}>long</button> 
+          
         </div>
   
       </nav>

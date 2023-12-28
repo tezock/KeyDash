@@ -27,10 +27,11 @@
   margin: auto;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .app-section {
-  margin: auto;
+  /* margin: auto; */
 }
 
 body, html {
@@ -43,7 +44,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  position: fixed;
+  
 }
 
 /* Style the app items */
@@ -52,23 +53,54 @@ body {
 
 nav {
   width: 100%;
-  margin: auto;
+  margin-top: 4vh;
 }
 
 .nav-content {  
   height: 10vh;
-  width: 100%;
+  width: 85%;
   color: var(--lightest);
-}
+  display: flex;
+  flex-direction: row;
+  margin: auto;
 
-nav .logo {
-  font-size: 2rem;
-  font-weight: bold;
 }
 
 nav span {
   color: var(--splash);
 }
+
+nav .logo-text {
+  font-size: 2rem;
+  font-weight: bold;
+  display: inline-block;
+}
+
+nav .logo-hook {
+  font-size: 0.75rem;
+}
+
+nav .nav-link {
+  height: 40%;
+  margin: auto 10px;
+  text-decoration: none;
+  color: var(--lightest);
+}
+
+nav .nav-link:hover {
+  color: var(--splash);
+}
+
+nav .page-links {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.logo-keyboard {
+  fill: var(--splash);
+}
+
 /* Style TypingBox */
 
 .typingbox {
@@ -78,14 +110,15 @@ nav span {
   font-size: 30px;
   text-align: left; 
   color: var(--light);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style typing test */
+
+.typing-test {
   
 }
-
-.logo-keyboard {
-  fill: var(--splash);
-}
-
-
 
 /* Style settings */
 
@@ -98,10 +131,33 @@ nav span {
 
 .settings-content {
   margin: auto;
-  width: 60%;
+  width: 40%;
   background-color: var(--darkest);
   border-radius: 7px;
   height: 5vh;
+  display: flex;
+  justify-content: space-around;
+}
+
+.vertical-rule {
+  display: inline-block;
+  background-color: var(--dark);
+  width: 5px;
+  height: 80%;
+  margin: auto 0;
+  border-radius: 9px;
+}
+
+.setting-item {
+  background-color: var(--darkest);
+  border: none;
+  color: var(--light);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.setting-item:hover {
+  color: var(--lightest);
 }
 
 .footer {
@@ -116,6 +172,7 @@ nav span {
   /* Hides the text box */
   width: 0px;
   height: 0px;
+  opacity: 0;
 }
 
 .untyped {
@@ -137,7 +194,7 @@ nav span {
 }
 
 /* Dropdown Button Styling */
-.dropbtn {
+/* .dropbtn {
   background-color: var(--darkest);
   color: var(--lightest);
   font-size: 16px;
@@ -177,10 +234,8 @@ nav span {
 
 .dropdown:hover .dropbtn {
   color: var(--splash);
-}
+} */
+
+
 
 /* style the typing test */
-
-.typing-test {
-  margin-top: 5%;
-}

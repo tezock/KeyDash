@@ -1,9 +1,9 @@
 import logo from './logo.svg';
 
-import TypingBox from './components/TypingBox';
+import QuoteTest from './components/QuoteTest';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
-import Settings from './components/settings';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
@@ -11,9 +11,18 @@ function App() {
       
         <div className="app-box">
           <div className="app-box-content">
-            <NavBar/>
-            <TypingBox />
-            <Footer />
+            
+             <Router>
+              <NavBar />
+
+              <Routes>
+                
+                <Route element={<QuoteTest />} path="/" exact/>;
+                
+              </Routes>
+
+              <Footer />
+            </Router> 
           </div>
         </div>
     </div>

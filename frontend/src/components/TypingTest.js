@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 /**
  * TODO:
- * Properly document as is
  * Analyze the scope of desired functions
  * Live count words per minute
  * Hide the input field
@@ -14,6 +13,7 @@ import { useState, useEffect } from "react";
  * Show the current character from the beginning, not after they start typing
  * Make current character into the blinking line instead of text decoration.
  * Better style the loading quote text
+ * 
  */
 
 /**
@@ -116,15 +116,14 @@ function calculateWPM(startTime, endTime, charactersTyped) {
   
     // Determine the total number of words typed
     const wordsTyped = charactersTyped / 5 // average word length of 4.7
-    console.log(endTime - startTime);
-    console.log(endTime)
-    console.log(startTime)
-    console.log(wordsTyped);
+
     // Calculate words per minute (WPM)
     const wpm = Math.round((wordsTyped * 60 * 1000) / ((endTime - startTime)));
   
     return wpm;
   }
+
+
 
 // stores the starting time.
 let startTime = Date.now();
@@ -134,7 +133,7 @@ let startTime = Date.now();
  * @param {object} quote - quote object
  * @returns typing test component
  */
-function TypingTest({ quote }) {
+function TypingTest({ quote, setTestCompletion }) {
 
     // updates the current index through the quote
     const [currIndex, updateIndex] = useState(0);
@@ -205,6 +204,12 @@ function TypingTest({ quote }) {
         setInputSize(newString.length);
     }
 
+    function resetTest() {
+
+        setTestCompletion(true);
+        updateIndex(0);
+    }
+
     if (currIndex === 1) {
         startTime = Date.now();
     }
@@ -225,7 +230,7 @@ function TypingTest({ quote }) {
             <div className="typing-test">
                 WPM: {calculateWPM(startTime, Date.now(), charList.length)}
                 <br/>
-                <button onClick={()=>(window.location.reload())}>New Test</button>
+                <button onClick={resetTest}>New Test</button>
             </div>
         )
     }

@@ -14,7 +14,7 @@ Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
-### Personal Notes:
+### Notes:
 
 -Pesticide is helpful!
 

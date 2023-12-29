@@ -44,12 +44,12 @@ function NavBar() {
               </NavLink>
             </div>
 
-            <NavLink to="/" className="nav-link">
+            {/* <NavLink to="/" className="nav-link">
               Sign In
             </NavLink>
             <NavLink to="/" className="nav-link">
               Sign Up
-            </NavLink>
+            </NavLink> */}
             
         </div>
   

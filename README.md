@@ -14,7 +14,7 @@ Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
-### Release Notes:
+### Personal Notes:
 
 -Pesticide is helpful!
 
@@ -32,5 +32,9 @@ Solved by re-rendering the page when the quote fully renders. Because the quotes
 an API, the first render may not always render the necessary text to be selected. Thus, when I update the
 page when the quote updates, I properly update the necesary items in the DOM.
 
--Watch out for both 'undefined' and 'null' values
+-Watch out for both 'undefined' and 'null' values. Helps a lot to make a helper function that checks
+both
+
+-Built a a working version of the input field! However, I made it more 'stateful' than intended.
+Only up from here!
 

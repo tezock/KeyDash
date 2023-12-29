@@ -180,7 +180,7 @@ div .word {
 } */
 
 .letter.correct {
-  color: var(--light);
+  color: var(--lightest);
 }
 
 .letter.incorrect {

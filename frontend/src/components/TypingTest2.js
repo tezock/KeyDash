@@ -132,7 +132,7 @@ const styleWrongCharTo = (currIndex) => {
 
 function formatWord(word) {
 
-    console.log(word.split(''));
+    
     return word.split('').map((item) => {
         return (<span className="letter">{item}</span>);
     })
@@ -156,8 +156,10 @@ function calculateWPM(startTime, endTime, charactersTyped) {
 // stores the starting time.
 let startTime = Date.now();
 
-function isNotNull(element) {
-    return (element !== undefined && element !== null);
+let runningWord = 1;
+
+function isNull(element) {
+    return (element === undefined || element === null);
 }
 
 /**
@@ -170,6 +172,17 @@ function TypingTest2({ quote, setTestCompletion }) {
     
     
     const [currIndex, updateIndex] = useState(0);
+    const [currWord, updateWord] = useState(runningWord);
+
+    const increment = () => {
+        runningWord += 1;
+        return updateWord(() => currWord + 1);
+    }
+
+    const decrement = () => {
+        runningWord += 1;
+        return updateWord(() => currWord - 1);
+    }
 
     const testBoxReference = useRef();
 
@@ -181,7 +194,7 @@ function TypingTest2({ quote, setTestCompletion }) {
     
     function addClass(element, name) {
 
-        if (element !== undefined && element !== null) {
+        if (!isNull(element)) {
             if (!element.className.includes(name)) {
                 element.className += ' ' + name;
             }
@@ -189,27 +202,136 @@ function TypingTest2({ quote, setTestCompletion }) {
     }
 
     function removeClass(element, name) {
-        element.className = element.className.replace(name, '');
+        if (!isNull(element)) {
+            element.className = element.className.replace(name, '');
+        }
+        
+    }
+
+    function hasClass(element, name) {
+        if (!isNull(element)) {
+            return element.className.includes(name);
+        }
+        return false;
     }
 
 
     const handleKeyDown = (event) => {
 
         const key = event.key;
+        const currentWord = document.querySelector('.word.current');
         const currentLetter = document.querySelector('.letter.current');
-        const expected = currentLetter.innerHTML;
+        const expected = !isNull(currentLetter) ? currentLetter.innerHTML : ' ';
 
         const isLetter = key.length === 1 && key !== ' ';
+        const isSpace = key === ' ';
+        const isBackspace = key === 'Backspace';
+        const isFirstLetter = !isNull(currentWord) && !isNull(currentLetter) ? currentLetter === currentWord.firstChild : false;
 
-        console.log({key, expected});
 
         if (isLetter) {
-            if (currentLetter !== undefined && currentLetter !== null) {
+            if (!isNull(currentLetter)) {
 
                 addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
-                console.log(currentLetter);
+                removeClass(currentLetter, 'current');
+
+                if (!isNull(currentLetter.nextSibling)) {
+                    addClass(currentLetter.nextSibling, 'current');
+                }
+                
+            }
+            else {
+
+                const incorrectLetter = document.createElement('span');
+                incorrectLetter.innerHTML = key;
+                incorrectLetter.className ='letter incorrect extra';
+                currentWord.appendChild(incorrectLetter);
+            }
+        }
+
+        if (isSpace) {
+
+            if (expected !== ' ') {
+
+                const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')];
+
+                lettersToInvalidate.forEach(
+                    (letter) => {
+                        addClass(letter, 'incorrect');
+                    }
+                )
+            }
+
+            removeClass(currentWord, 'current');
+            addClass(currentWord.nextSibling, 'current');
+
+            if (!isNull(currentLetter)) {
+                removeClass(currentLetter, 'current');
+            }
+            addClass(currentWord.nextSibling.firstChild, 'current');
+            increment();
+            console.log("Increment!" + currWord);
+        }
+
+        if (isBackspace) {
+
+            if (!isNull(currentLetter) && isFirstLetter) {
+
+                removeClass(currentWord, 'current');
+                addClass(currentWord.previousSibling, 'current');
+                removeClass(currentLetter, 'current');
+                addClass(currentWord.previousSibling.lastChild, 'current');
+                removeClass(currentWord.previousSibling.lastChild, 'incorrect')
+                removeClass(currentWord.previousSibling.lastChild, 'correct');
+                decrement();
+            }
+            else if (!isNull(currentLetter) && !isFirstLetter) {
+
+                // move back one letter, invalidate letter
+                removeClass(currentLetter, 'current');
+                addClass(currentLetter.previousSibling, 'current');
+                removeClass(currentLetter.previousSibling, 'incorrect')
+                removeClass(currentLetter.previousSibling, 'correct');
+            }
+            else if (isNull(currentLetter)) {
+                addClass(currentWord.lastChild, 'current');
+                removeClass(currentWord.lastChild, 'incorrect')
+                removeClass(currentWord.lastChild, 'correct');
+            }
+            
+        }
+
+        
+
+        // move cursor
+        const nextLetter = document.querySelector('.letter.current');
+        const nextWord = document.querySelector('.word.current');
+        const cursor = document.getElementById('carat');
+
+        
+
+        // move lines / words
+        if (!isNull(nextLetter)) {
+            const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
+            const inner = -nextLetter.getBoundingClientRect().top;
+
+            if (outer - inner >= 80) {
+
+                const words = document.getElementById('character-content-box');
+                const margin = parseInt(words.style.marginTop || '0px');
+                words.style.marginTop = (margin - 40) + 'px';
 
             }
+
+        }
+
+        // move the cursor
+        if (!isNull(nextLetter)) {
+            cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+            cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+        } else {
+            cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+            cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
         }
     }
 
@@ -217,16 +339,30 @@ function TypingTest2({ quote, setTestCompletion }) {
         () => {
 
             const testBox = document.getElementById("test-container");
-            console.log(testBox);
+            
 
             testBox.addEventListener("keydown", handleKeyDown);
-            console.log("Added Listener");
+            
 
-            if (isNotNull(wordList)) {
-                
+            if (!isNull(wordList)) {
+
                 addClass(testBox.querySelector('.word'), 'current');
                 addClass(testBox.querySelector('.letter'), 'current');
-            }
+
+                 // move cursor
+                const nextLetter = document.querySelector('.letter.current');
+                const nextWord = document.querySelector('.word.current');
+                const cursor = document.getElementById('carat');
+        
+                // move the cursor
+                if (!isNull(nextLetter)) {
+                    cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+                } else {
+                    cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+                }
+                    }
             return () => {
                 testBox.removeEventListener("keydown", handleKeyDown);;
                 
@@ -281,13 +417,13 @@ function TypingTest2({ quote, setTestCompletion }) {
         <div id="test-container" className="typing-test">
             
             {/* WPM: {calculateWPM(startTime, Date.now(), currIndex)} */}
-            {currIndex}
+            {currWord } / {wordList.length}
             <br/>
 
             
             
-            <div className="test-characters" tabIndex="0" ref={testBoxReference}>
-                <div className="test-characters-content">
+            <div id="main-test-container" className="test-characters" tabIndex="0" ref={testBoxReference}>
+                <div id="character-content-box" className="test-characters-content">
 
                     {
                         wordList.map(

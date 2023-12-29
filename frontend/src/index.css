@@ -135,14 +135,33 @@ div .word {
   margin: 0 5px;
 }
 
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 #carat {
   width: 2px;
   height: 35px;
   background-color: var(--splash);
-  position: relative;
+  position: fixed;
+  top: 50px;
+  animation: blink .9s infinite;
+  display: none;
 }
 
-.untyped {
+.test-characters:focus #carat {
+  display: block;
+}
+
+/* .untyped {
   color: var(--light);
 }
 
@@ -158,6 +177,14 @@ div .word {
 .incorrect {
   color: var(--wrong);
   text-decoration: underline;
+} */
+
+.letter.correct {
+  color: var(--light);
+}
+
+.letter.incorrect {
+  color: var(--wrong);
 }
 
 .test-characters-content {

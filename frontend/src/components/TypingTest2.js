@@ -152,35 +152,13 @@ function calculateWPM(startTime, endTime, charactersTyped) {
     return wpm;
   }
 
-// function getCharObjects(charList, currIndex) {
-
-//     const resultArray = [];
-
-//     if (charList === undefined || charList === null) {
-//         return null;
-//     }
-
-//     for (let i = 0; i < charList.length; i++) {
-        
-//         let currObj = {
-//             char: charList[i],
-//             index: i,
-//             wrong: false,
-//             extra: false,
-//             class: "untyped"
-//         };
-        
-//         resultArray.push(currObj);
-//     }
-
-    
-//     resultArray[currIndex].class = "current";
-
-//     return resultArray;
-// }
 
 // stores the starting time.
 let startTime = Date.now();
+
+function isNotNull(element) {
+    return (element !== undefined && element !== null);
+}
 
 /**
  * Typing Test component.
@@ -193,70 +171,68 @@ function TypingTest2({ quote, setTestCompletion }) {
     
     const [currIndex, updateIndex] = useState(0);
 
+    const testBoxReference = useRef();
+
     // remember to delete
     const charList = getCharList(quote);
     
     const wordList = getWordList(quote);
 
-    /**
-     * Increment the state index variable.
-     */
-    const increment = () => {
-        updateIndex(() => currIndex + 1);
+    
+    function addClass(element, name) {
+
+        if (element !== undefined && element !== null) {
+            if (!element.className.includes(name)) {
+                element.className += ' ' + name;
+            }
+        }
     }
 
-    /**
-     * Decrement the state index variable.
-     */
-    const decrement = () => {
-        updateIndex(() => currIndex - 1);
+    function removeClass(element, name) {
+        element.className = element.className.replace(name, '');
     }
-    console.log(currIndex);
+
+
     const handleKeyDown = (event) => {
-        
-        // // handle backspace
-        // const isBackspace = event.key === "Backspace";
 
-        // // Check if the pressed key is alphanumeric (including space w/ generality)
-        // const isAlphanumeric = /^[a-zA-Z0-9\s]$/.test(event.key);
-        
-        // // handle correct character
-        // const isCorrectCharacter = event.key === charObjects[currIndex].char;
+        const key = event.key;
+        const currentLetter = document.querySelector('.letter.current');
+        const expected = currentLetter.innerHTML;
 
-        // console.log("current Index: " + currIndex);
-        // console.log("event: " + event.key);
+        const isLetter = key.length === 1 && key !== ' ';
 
-        // console.log("correct: " + charObjects[currIndex].char);
+        console.log({key, expected});
 
-        // console.log("Did you type right thing:" + isCorrectCharacter);
+        if (isLetter) {
+            if (currentLetter !== undefined && currentLetter !== null) {
 
-        // if (isAlphanumeric) {
+                addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
+                console.log(currentLetter);
 
-        //     // if we have reached the correct character, update styling.
-        //     if (isCorrectCharacter) {
-        //         // console.log("shifted!");
-        //         // charObjects[currIndex].class = "typed";
-        //         // charObjects[currIndex + 1].class = "current";
-        //         increment();
-        //     }
-
-        //     // update styling if we make an incorrect guess
-        //     else {
-            
-        //         charObjects[currIndex].class = "incorrect";
-        //     }
-        // }
+            }
+        }
     }
 
     useEffect(
         () => {
-            document.addEventListener("keydown", handleKeyDown);
-            
+
+            const testBox = document.getElementById("test-container");
+            console.log(testBox);
+
+            testBox.addEventListener("keydown", handleKeyDown);
+            console.log("Added Listener");
+
+            if (isNotNull(wordList)) {
+                
+                addClass(testBox.querySelector('.word'), 'current');
+                addClass(testBox.querySelector('.letter'), 'current');
+            }
             return () => {
-                document.removeEventListener("keydown", handleKeyDown);
+                testBox.removeEventListener("keydown", handleKeyDown);;
+                
             };
         },
-        []
+        [quote]
     )
 
     function resetTest() {
@@ -272,7 +248,7 @@ function TypingTest2({ quote, setTestCompletion }) {
     
     if (charList === null) {
         return (
-            <div className="typing-test">
+            <div id="test-container" className="typing-test">
                 Loading Quote.
             </div>
         )
@@ -282,7 +258,7 @@ function TypingTest2({ quote, setTestCompletion }) {
     if (currIndex === charList.length) {
 
         return (
-            <div className="typing-test">
+            <div id="test-container" className="typing-test">
                 WPM: {calculateWPM(startTime, Date.now(), charList.length)}
                 <br/>
                 <button onClick={resetTest}>New Test</button>
@@ -302,7 +278,7 @@ function TypingTest2({ quote, setTestCompletion }) {
     
     return (
 
-        <div className="typing-test">
+        <div id="test-container" className="typing-test">
             
             {/* WPM: {calculateWPM(startTime, Date.now(), currIndex)} */}
             {currIndex}
@@ -310,7 +286,7 @@ function TypingTest2({ quote, setTestCompletion }) {
 
             
             
-            <div className="test-characters" tabIndex="0">
+            <div className="test-characters" tabIndex="0" ref={testBoxReference}>
                 <div className="test-characters-content">
 
                     {
@@ -318,9 +294,7 @@ function TypingTest2({ quote, setTestCompletion }) {
                             (item, index) => {
 
                                 return (
-                                    <div 
-                                        className="word"
-                                    >
+                                    <div className="word">
                                         {formatWord(item)}
                                     </div>
                                 )
@@ -329,7 +303,7 @@ function TypingTest2({ quote, setTestCompletion }) {
                         )
                     }
                 </div>
-                <div id="carat">Hi</div>
+                <div id="carat"></div>
                 <div id="focus-error">Click here to focus</div>
             </div>
             

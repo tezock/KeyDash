@@ -126,7 +126,6 @@ nav .page-links {
   position: relative;
 }
 
-
 div .word {
   
   display: inline-block;
@@ -259,5 +258,15 @@ div .word {
   opacity: 0;
 }
 
+/* Styling the WPM Graph */
+
+.wpm-graph-section {
+  width: 100%;
+}
+
+.wpm-graph-content {
+  width: 70%;
+  margin: auto;
+}
 
 

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import WPMGraph from "./WPMGraph";
 
 /**
  * TODO:
@@ -163,6 +164,23 @@ function isNull(element) {
 }
 
 let numCorrect = 0;
+let wpmArr = [];
+let timeArr = [];
+
+let runningWPM = 0;
+
+function addGraphData() {
+
+    const currWPM = calculateWPM(startTime, Date.now(), numCorrect);
+    if (currWPM !== 0) {
+        console.log("added");
+        wpmArr.push(currWPM);
+        timeArr.push(timeArr.length + 1);
+    }
+
+    console.log(wpmArr);
+    console.log(timeArr);
+}
 
 /**
  * Typing Test component.
@@ -176,16 +194,6 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
     const [currIndex, updateIndex] = useState(0);
     const [currWord, updateWord] = useState(runningWord);
     const [testCompletion, setTestStatus] = useState(false);
-
-    const increment = () => {
-        runningWord += 1;
-        return updateWord(() => currWord + 1);
-    }
-
-    const decrement = () => {
-        runningWord += 1;
-        return updateWord(() => currWord - 1);
-    }
 
     const testBoxReference = useRef();
 
@@ -250,6 +258,10 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
                 if (key === expected) {
                     numCorrect++;
+
+                    if (numCorrect == 1) {
+                        startTime = Date.now();
+                    }
                 }
 
                 if (!isNull(currentLetter.nextSibling)) {
@@ -302,6 +314,9 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
             // handles when the current letter is the first letter in the word
             if (!isNull(currentLetter) && isFirstLetter && !isNull(currentWord.previousSibling)) {
 
+                // always decrement, as the previous character will be a space.
+                //numCorrect--;
+
                 removeClass(currentWord, 'current');
                 addClass(currentWord.previousSibling, 'current');
                 removeClass(currentLetter, 'current');
@@ -321,6 +336,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
                 // move back one letter, invalidate letter
                 removeClass(currentLetter, 'current');
                 addClass(currentLetter.previousSibling, 'current');
+
                 removeClass(currentLetter.previousSibling, 'incorrect')
                 removeClass(currentLetter.previousSibling, 'correct');
             }
@@ -395,7 +411,8 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
             
 
             testBox.addEventListener("keydown", handleKeyDown);
-            
+
+            runningWPM = setInterval(addGraphData, 1000);
 
             if (!isNull(wordList)) {
 
@@ -421,6 +438,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
                     }
             return () => {
                 testBox.removeEventListener("keydown", handleKeyDown);;
+                clearInterval(runningWPM)
                 
             };
         },
@@ -450,10 +468,12 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
     // if the last index was reached, return the WPM and a button to do a new test.
     if (currIndex === charList.length) {
 
+        
         return (
             <div id="test-container" className="typing-test">
                 WPM: {calculateWPM(startTime, Date.now(), charList.length)}
                 <br/>
+                
                 <button onClick={resetTest}>New Test</button>
             </div>
         )
@@ -470,10 +490,17 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
     }
 
     if (testCompletion) {
+
+        clearInterval(runningWPM)
+        addGraphData();
+        console.log(wpmArr);
+        console.log(timeArr);
+
         return (
             <div id="test-container" className="typing-test">
                 Test Completed! {numCorrect}
                 <br/>
+                <WPMGraph wpmArr={wpmArr} timeArr={timeArr} />
                 <button onClick={resetTest}>New Test</button>
             </div>
         )

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Settings from './Settings';
 import TypingTest from './TypingTest';
 import TypingTest2 from './TypingTest2';
+import WPMGraph from './WPMGraph';
 
 function QuoteTest() {
 
@@ -47,6 +48,7 @@ function QuoteTest() {
     <div className="typingbox app-section">
       <Settings setQuoteLength={setQuoteLength} />
       <TypingTest2 quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} />
+      {/* <WPMGraph/> */}
     </div>
   );
 }

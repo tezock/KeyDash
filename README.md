@@ -17,7 +17,9 @@ Mostly working on the frontend via React.js.
 ### Features:
 
 -Scrolling up and down through typing test
+
 -Quotes provided by the Quotable API
+
 -Interface for completed tests presenting users with their results
 
 ### Bugfixes:

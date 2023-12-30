@@ -16,10 +16,16 @@ Mostly working on the frontend via React.js.
 
 ### Features:
 
+-Scrolling up and down through typing test
+-Quotes provided by the Quotable API
+-Interface for completed tests presenting users with their results
+
 ### Bugfixes:
 
 -Text didn't render when backspace pressed at the beginning of test.
+
 -Going back to a previous word went 1 index back too far.
+
 -Scrolling up to previous lines now properly working.
 
 ### Notes:

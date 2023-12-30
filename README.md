@@ -14,6 +14,14 @@ Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
+### Features:
+
+### Bugfixes:
+
+-Text didn't render when backspace pressed at the beginning of test.
+-Going back to a previous word went 1 index back too far.
+-Scrolling up to previous lines now properly working.
+
 ### Notes:
 
 -Pesticide is helpful!
@@ -37,4 +45,5 @@ both
 
 -Built a a working version of the input field! However, I made it more 'stateful' than intended.
 Only up from here!
+
 

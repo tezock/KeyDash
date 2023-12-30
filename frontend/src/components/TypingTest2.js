@@ -162,17 +162,20 @@ function isNull(element) {
     return (element === undefined || element === null);
 }
 
+let numCorrect = 0;
+
 /**
  * Typing Test component.
  * @param {object} quote - quote object
  * @returns typing test component
  */
-function TypingTest2({ quote, setTestCompletion }) {
+function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
     
     
     const [currIndex, updateIndex] = useState(0);
     const [currWord, updateWord] = useState(runningWord);
+    const [testCompletion, setTestStatus] = useState(false);
 
     const increment = () => {
         runningWord += 1;
@@ -187,11 +190,11 @@ function TypingTest2({ quote, setTestCompletion }) {
     const testBoxReference = useRef();
 
     // remember to delete
-    const charList = getCharList(quote);
+    let charList = getCharList(quote);
     
-    const wordList = getWordList(quote);
+    let wordList = getWordList(quote);
 
-    
+    // adds a class to a given element if it's not null
     function addClass(element, name) {
 
         if (!isNull(element)) {
@@ -201,6 +204,7 @@ function TypingTest2({ quote, setTestCompletion }) {
         }
     }
 
+    // removes a class from a given element if it's not null
     function removeClass(element, name) {
         if (!isNull(element)) {
             element.className = element.className.replace(name, '');
@@ -208,6 +212,7 @@ function TypingTest2({ quote, setTestCompletion }) {
         
     }
 
+    // check if a given element has a given class.
     function hasClass(element, name) {
         if (!isNull(element)) {
             return element.className.includes(name);
@@ -216,29 +221,46 @@ function TypingTest2({ quote, setTestCompletion }) {
     }
 
 
+    // handles the event when the keyboard is pressed.
     const handleKeyDown = (event) => {
 
+        // the value typed
         const key = event.key;
+
         const currentWord = document.querySelector('.word.current');
         const currentLetter = document.querySelector('.letter.current');
+
+        // store the expected letter if there is one. If not, store a spacebar as we have reached
+        // the end of a word.
         const expected = !isNull(currentLetter) ? currentLetter.innerHTML : ' ';
 
         const isLetter = key.length === 1 && key !== ' ';
         const isSpace = key === ' ';
         const isBackspace = key === 'Backspace';
+
+        // checks if the current letter is the first letter in the current word.
         const isFirstLetter = !isNull(currentWord) && !isNull(currentLetter) ? currentLetter === currentWord.firstChild : false;
 
-
+        // handles when the user types a letter
         if (isLetter) {
             if (!isNull(currentLetter)) {
 
                 addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
                 removeClass(currentLetter, 'current');
 
+                if (key === expected) {
+                    numCorrect++;
+                }
+
                 if (!isNull(currentLetter.nextSibling)) {
                     addClass(currentLetter.nextSibling, 'current');
                 }
                 
+                // if there is no next letter and no next word, we have finished the test!
+                if (isNull(currentLetter.nextSibling) && isNull(currentWord.nextSibling)) {
+                    console.log("Done");
+                    setTestStatus(true);
+                }
             }
             else {
 
@@ -249,6 +271,7 @@ function TypingTest2({ quote, setTestCompletion }) {
             }
         }
 
+        // handles when the user types a space
         if (isSpace) {
 
             if (expected !== ' ') {
@@ -269,22 +292,30 @@ function TypingTest2({ quote, setTestCompletion }) {
                 removeClass(currentLetter, 'current');
             }
             addClass(currentWord.nextSibling.firstChild, 'current');
-            increment();
-            console.log("Increment!" + currWord);
+            // increment();
+            // console.log("Increment!" + currWord);
         }
 
+        // handles when the user presses backspace
         if (isBackspace) {
 
-            if (!isNull(currentLetter) && isFirstLetter) {
+            // handles when the current letter is the first letter in the word
+            if (!isNull(currentLetter) && isFirstLetter && !isNull(currentWord.previousSibling)) {
 
                 removeClass(currentWord, 'current');
                 addClass(currentWord.previousSibling, 'current');
                 removeClass(currentLetter, 'current');
-                addClass(currentWord.previousSibling.lastChild, 'current');
-                removeClass(currentWord.previousSibling.lastChild, 'incorrect')
-                removeClass(currentWord.previousSibling.lastChild, 'correct');
-                decrement();
+
+                // wait until done to remove this code. Was encountering error where it went back 1
+                // index too far.
+                // addClass(currentWord.previousSibling.lastChild, 'current');
+                // removeClass(currentWord.previousSibling.lastChild, 'incorrect')
+                // removeClass(currentWord.previousSibling.lastChild, 'correct');
+
+                // decrement();
             }
+
+            // handles when current letter is not the first letter in the word
             else if (!isNull(currentLetter) && !isFirstLetter) {
 
                 // move back one letter, invalidate letter
@@ -293,7 +324,10 @@ function TypingTest2({ quote, setTestCompletion }) {
                 removeClass(currentLetter.previousSibling, 'incorrect')
                 removeClass(currentLetter.previousSibling, 'correct');
             }
+
+            // handles when the user backspaces from the last letter in the current word
             else if (isNull(currentLetter)) {
+
                 addClass(currentWord.lastChild, 'current');
                 removeClass(currentWord.lastChild, 'incorrect')
                 removeClass(currentWord.lastChild, 'correct');
@@ -301,30 +335,49 @@ function TypingTest2({ quote, setTestCompletion }) {
             
         }
 
-        
-
         // move cursor
         const nextLetter = document.querySelector('.letter.current');
         const nextWord = document.querySelector('.word.current');
         const cursor = document.getElementById('carat');
 
-        
-
-        // move lines / words
+        // scrolls the text down if necessary
         if (!isNull(nextLetter)) {
             const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
             const inner = -nextLetter.getBoundingClientRect().top;
 
+            // if the user passes the second line
             if (outer - inner >= 80) {
 
                 const words = document.getElementById('character-content-box');
                 const margin = parseInt(words.style.marginTop || '0px');
                 words.style.marginTop = (margin - 40) + 'px';
-
             }
-
         }
 
+        // move the cursor
+        if (!isNull(nextLetter)) {
+            cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+            cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+        } else {
+            cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+            cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+        }
+
+        // scroll the text up if necessary if the next (prev due to backspace) word isn't null.
+        if (!isNull(nextWord)) {
+            const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
+            const inner = -nextWord.getBoundingClientRect().top;
+
+            // if the user passes the second line
+            if (outer - inner < 0) {
+
+                const words = document.getElementById('character-content-box');
+                const margin = parseInt(words.style.marginTop || '0px');
+                words.style.marginTop = (margin + 40) + 'px';
+            }
+        }
+
+        // move cursor again in case the text went up
         // move the cursor
         if (!isNull(nextLetter)) {
             cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
@@ -362,6 +415,9 @@ function TypingTest2({ quote, setTestCompletion }) {
                     cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
                     cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
                 }
+
+                // focus on the text box
+                document.getElementById("main-test-container").focus();
                     }
             return () => {
                 testBox.removeEventListener("keydown", handleKeyDown);;
@@ -372,7 +428,8 @@ function TypingTest2({ quote, setTestCompletion }) {
     )
 
     function resetTest() {
-
+        charList = null;
+        wordList = null;
         setTestCompletion(true);
         updateIndex(0);
     }
@@ -410,6 +467,16 @@ function TypingTest2({ quote, setTestCompletion }) {
     // if the input box is on the screen, focus the user onto it.
     if (input != null) {
         input.focus();
+    }
+
+    if (testCompletion) {
+        return (
+            <div id="test-container" className="typing-test">
+                Test Completed! {numCorrect}
+                <br/>
+                <button onClick={resetTest}>New Test</button>
+            </div>
+        )
     }
     
     return (

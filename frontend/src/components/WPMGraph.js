@@ -59,7 +59,9 @@ function WPMGraph( {wpmArr, timeArr} ) {
                 style: {
                   colors: lightest
                 }
-              }
+              },
+            min: 0,
+            forceNiceScale: true,
         },
         colors: [splash],
       }

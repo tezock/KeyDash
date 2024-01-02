@@ -145,7 +145,7 @@ function calculateWPM(startTime, endTime, charactersTyped) {
     const totalTimeInMinutes = totalTimeInSeconds / 60;
   
     // Determine the total number of words typed
-    const wordsTyped = charactersTyped / 5 // average word length of 4.7
+    const wordsTyped = charactersTyped / 4.7 // average word length of 4.7
 
     // Calculate words per minute (WPM)
     const wpm = Math.round((wordsTyped * 60 * 1000) / ((endTime - startTime)));
@@ -163,6 +163,7 @@ function isNull(element) {
     return (element === undefined || element === null);
 }
 
+let numWrong = 0;
 let numCorrect = 0;
 let wpmArr = [];
 let timeArr = [];
@@ -173,13 +174,14 @@ function addGraphData() {
 
     const currWPM = calculateWPM(startTime, Date.now(), numCorrect);
     if (currWPM !== 0) {
-        console.log("added");
         wpmArr.push(currWPM);
-        timeArr.push(timeArr.length + 1);
+        timeArr.push(timeArr.length);
     }
 
-    console.log("Current WPM: " + currWPM);
-    console.log(numCorrect);
+    console.log("----");
+    console.log("When Added: " + numCorrect);
+    console.log("WPM: " + currWPM)
+    console.log("Time Diff: " + (Date.now() - startTime));
     console.log("----")
 
     // console.log(wpmArr);
@@ -262,10 +264,16 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
                 if (key === expected) {
                     numCorrect++;
+                    console.log(numCorrect);
 
                     if (numCorrect == 1) {
                         startTime = Date.now();
+                        console.log("Stored starting time!");
                     }
+                }
+
+                else {
+                    numWrong++;
                 }
 
                 if (!isNull(currentLetter.nextSibling)) {
@@ -274,7 +282,6 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
                 
                 // if there is no next letter and no next word, we have finished the test!
                 if (isNull(currentLetter.nextSibling) && isNull(currentWord.nextSibling)) {
-                    console.log("Done");
                     setTestStatus(true);
                 }
             }
@@ -297,8 +304,17 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
                 lettersToInvalidate.forEach(
                     (letter) => {
                         addClass(letter, 'incorrect');
+                        
                     }
                 )
+
+                numWrong += lettersToInvalidate.length;
+            } 
+
+            // if a space was expected, increment
+            else if (expected === ' ') {
+
+                numCorrect++;
             }
 
             removeClass(currentWord, 'current');
@@ -509,7 +525,8 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
         return (
             <div id="test-container" className="typing-test">
-                Test Completed! {calculateWPM(startTime, Date.now(), numCorrect)}
+                WPM: {calculateWPM(startTime, Date.now(), numCorrect)}
+                {" "}Accuracy: {Math.floor((numCorrect * 100 / (numWrong + numCorrect)))}%
                 <br/>
                 <WPMGraph wpmArr={wpmArr} timeArr={timeArr} />
                 <button onClick={resetTest}>New Test</button>

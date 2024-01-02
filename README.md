@@ -24,13 +24,15 @@ Mostly working on the frontend via React.js.
 
 ### Bugfixes:
 
--Text didn't render when backspace pressed at the beginning of test.
+-Accounted for backspacing from the first character in the test. Text didn't render when backspace pressed at the beginning.
 
--Going back to a previous word went 1 index back too far.
+-Proper styling when backspacing to previous word. Going back to a previous word went 1 index back too far.
 
 -Scrolling up to previous lines now properly working.
 
--Check for null cursor pointer to avoid runtime error whent ests are completed.
+-Checked for null cursor pointer to avoid runtime error when tests are completed.
+
+-Accounted for spaces when calculating WPM. Was previously receiving WPM results 20% lower than expected.
 
 ### Notes:
 

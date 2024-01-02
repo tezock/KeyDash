@@ -30,6 +30,8 @@ Mostly working on the frontend via React.js.
 
 -Scrolling up to previous lines now properly working.
 
+-Check for null cursor pointer to avoid runtime error whent ests are completed.
+
 ### Notes:
 
 -Pesticide is helpful!

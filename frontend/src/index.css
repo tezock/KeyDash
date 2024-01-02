@@ -265,8 +265,9 @@ div .word {
 }
 
 .wpm-graph-content {
-  width: 70%;
   margin: auto;
+  height: 200px;
+  width: 80%;
 }
 
 

@@ -178,8 +178,12 @@ function addGraphData() {
         timeArr.push(timeArr.length + 1);
     }
 
-    console.log(wpmArr);
-    console.log(timeArr);
+    console.log("Current WPM: " + currWPM);
+    console.log(numCorrect);
+    console.log("----")
+
+    // console.log(wpmArr);
+    // console.log(timeArr);
 }
 
 /**
@@ -366,41 +370,48 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
                 const words = document.getElementById('character-content-box');
                 const margin = parseInt(words.style.marginTop || '0px');
-                words.style.marginTop = (margin - 40) + 'px';
+                
+                if (!isNull(words)) {
+                    words.style.marginTop = (margin - 40) + 'px';
+                }
             }
         }
 
-        // move the cursor
-        if (!isNull(nextLetter)) {
-            cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
-            cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
-        } else {
-            cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
-            cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
-        }
+        // move the cursor if it isn't null. If not checked, runtime error occurs.
 
-        // scroll the text up if necessary if the next (prev due to backspace) word isn't null.
-        if (!isNull(nextWord)) {
-            const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
-            const inner = -nextWord.getBoundingClientRect().top;
+        if (!isNull(cursor)) {
 
-            // if the user passes the second line
-            if (outer - inner < 0) {
-
-                const words = document.getElementById('character-content-box');
-                const margin = parseInt(words.style.marginTop || '0px');
-                words.style.marginTop = (margin + 40) + 'px';
+            if (!isNull(nextLetter)) {
+                cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+            } else {
+                cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
             }
-        }
 
-        // move cursor again in case the text went up
-        // move the cursor
-        if (!isNull(nextLetter)) {
-            cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
-            cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
-        } else {
-            cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
-            cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+            // scroll the text up if necessary if the next (prev due to backspace) word isn't null.
+            if (!isNull(nextWord)) {
+                const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
+                const inner = -nextWord.getBoundingClientRect().top;
+
+                // if the user passes the second line
+                if (outer - inner < 0) {
+
+                    const words = document.getElementById('character-content-box');
+                    const margin = parseInt(words.style.marginTop || '0px');
+                    words.style.marginTop = (margin + 40) + 'px';
+                }
+            }
+
+            // move cursor again in case the text went up
+            // move the cursor
+            if (!isNull(nextLetter)) {
+                cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+            } else {
+                cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+            }
         }
     }
 
@@ -498,7 +509,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
         return (
             <div id="test-container" className="typing-test">
-                Test Completed! {numCorrect}
+                Test Completed! {calculateWPM(startTime, Date.now(), numCorrect)}
                 <br/>
                 <WPMGraph wpmArr={wpmArr} timeArr={timeArr} />
                 <button onClick={resetTest}>New Test</button>

@@ -4,8 +4,21 @@ import React from 'react';
 
 
 function WPMGraph( {wpmArr, timeArr} ) {
+
     const splash = getComputedStyle(document.documentElement).getPropertyValue('--splash');
     const lightest = getComputedStyle(document.documentElement).getPropertyValue('--lightest');
+
+    if (timeArr.length > 40) {
+
+      const deltaX = Math.floor(timeArr.length / 20);
+      
+      for (let i = 0; i < timeArr.length; i++) {
+        if (i % deltaX !== 0) {
+          
+          timeArr[i] = undefined;
+        }
+      }
+    }
 
     // var options = {
     //     chart: {
@@ -34,6 +47,9 @@ function WPMGraph( {wpmArr, timeArr} ) {
 
     var options = {
         chart: {
+          toolbar: {
+            show: false,
+          },
           type: 'area'
         },
         stroke: {
@@ -70,10 +86,12 @@ function WPMGraph( {wpmArr, timeArr} ) {
         <div className="wpm-graph-section">
             <div className="wpm-graph-content">
                 <Chart 
-                className="wpm-graph-content"
+                // className="wpm-graph-content"
                 options={options} 
                 series={options.series} 
                 type="area" 
+                width="100%"
+                height="100%"
                     />
             </div>
         </div>

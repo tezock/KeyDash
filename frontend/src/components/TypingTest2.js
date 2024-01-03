@@ -167,6 +167,7 @@ function isNull(element) {
 
 let numWrong = 0;
 let numCorrect = 0;
+let numExtra = 0;
 let wpmArr = [];
 let timeArr = [];
 
@@ -293,6 +294,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted, setSettingsVis
                 incorrectLetter.innerHTML = key;
                 incorrectLetter.className ='letter incorrect extra';
                 currentWord.appendChild(incorrectLetter);
+                numExtra++;
             }
         }
 
@@ -542,13 +544,18 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted, setSettingsVis
         const graphProps = {
             wpmArray: wpmArr,
             timeArray: timeArr,
-
         }
 
         const statsProps = {
 
             wpm: calculateWPM(startTime, Date.now(), numCorrect),
-            accuracy: Math.floor((numCorrect * 100 / (numWrong + numCorrect)))
+            accuracy: Math.floor((numCorrect * 100 / (numWrong + numCorrect))),
+            correct: numCorrect,
+            incorrect: numWrong,
+            extra: numExtra,
+            length: quote.content.length,
+            author: quote.author,
+            time: timeArr[timeArr.length - 1],
         }
 
 

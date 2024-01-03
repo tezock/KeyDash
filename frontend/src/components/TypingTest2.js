@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import WPMGraph from "./WPMGraph";
+import Stats from "./Stats";
 
 /**
  * TODO:
@@ -140,6 +141,7 @@ function formatWord(word) {
 }
 
 function calculateWPM(startTime, endTime, charactersTyped) {
+
     // Calculate the total time in minutes
     const totalTimeInSeconds = (endTime - startTime) / 1000; // Convert milliseconds to seconds
     const totalTimeInMinutes = totalTimeInSeconds / 60;
@@ -178,11 +180,11 @@ function addGraphData() {
         timeArr.push(timeArr.length);
     }
 
-    console.log("----");
-    console.log("When Added: " + numCorrect);
-    console.log("WPM: " + currWPM)
-    console.log("Time Diff: " + (Date.now() - startTime));
-    console.log("----")
+    // console.log("----");
+    // console.log("When Added: " + numCorrect);
+    // console.log("WPM: " + currWPM)
+    // console.log("Time Diff: " + (Date.now() - startTime));
+    // console.log("----")
 
     // console.log(wpmArr);
     // console.log(timeArr);
@@ -193,7 +195,7 @@ function addGraphData() {
  * @param {object} quote - quote object
  * @returns typing test component
  */
-function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
+function TypingTest2({ quote, setTestCompletion, isTestCompleted, setSettingsVisibility }) {
 
     
     
@@ -335,7 +337,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
             if (!isNull(currentLetter) && isFirstLetter && !isNull(currentWord.previousSibling)) {
 
                 // always decrement, as the previous character will be a space.
-                //numCorrect--;
+                numCorrect--;
 
                 removeClass(currentWord, 'current');
                 addClass(currentWord.previousSibling, 'current');
@@ -353,6 +355,9 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
             // handles when current letter is not the first letter in the word
             else if (!isNull(currentLetter) && !isFirstLetter) {
 
+                if (hasClass(currentLetter.previousSibling, "correct") && !hasClass(currentLetter.previousSibling, "incorrect")) {
+                    numCorrect--;
+                }
                 // move back one letter, invalidate letter
                 removeClass(currentLetter, 'current');
                 addClass(currentLetter.previousSibling, 'current');
@@ -364,9 +369,19 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
             // handles when the user backspaces from the last letter in the current word
             else if (isNull(currentLetter)) {
 
+                // checks the current word's last child, as the current letter is null since it's a space!
+                if (hasClass(currentWord.lastChild, "correct") && !hasClass(currentWord.lastChild, "incorrect")) {
+                    numCorrect--;
+                }
+
                 addClass(currentWord.lastChild, 'current');
                 removeClass(currentWord.lastChild, 'incorrect')
                 removeClass(currentWord.lastChild, 'correct');
+
+                // if we've backspaced and the last letter is an EXTRA letter, remove it from the DOM!
+                if (hasClass(currentWord.lastChild, "extra")) {
+                    currentWord.removeChild(currentWord.lastChild);
+                }
             }
             
         }
@@ -520,15 +535,28 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
 
         clearInterval(runningWPM)
         addGraphData();
+        setSettingsVisibility(false);
         console.log(wpmArr);
         console.log(timeArr);
 
+        const graphProps = {
+            wpmArray: wpmArr,
+            timeArray: timeArr,
+
+        }
+
+        const statsProps = {
+
+            wpm: calculateWPM(startTime, Date.now(), numCorrect),
+            accuracy: Math.floor((numCorrect * 100 / (numWrong + numCorrect)))
+        }
+
+
+
         return (
             <div id="test-container" className="typing-test">
-                WPM: {calculateWPM(startTime, Date.now(), numCorrect)}
-                {" "}Accuracy: {Math.floor((numCorrect * 100 / (numWrong + numCorrect)))}%
-                <br/>
-                <WPMGraph wpmArr={wpmArr} timeArr={timeArr} />
+                <Stats props={statsProps} />
+                <WPMGraph props={graphProps} />
                 <button onClick={resetTest}>New Test</button>
             </div>
         )
@@ -539,7 +567,7 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted }) {
         <div id="test-container" className="typing-test">
             
             {/* WPM: {calculateWPM(startTime, Date.now(), currIndex)} */}
-            {currWord } / {wordList.length}
+
             <br/>
 
             

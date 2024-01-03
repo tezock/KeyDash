@@ -11,6 +11,7 @@ function QuoteTest() {
   const [quote, updateQuote] = useState({});
   const [quoteLength, setQuoteLength] = useState(250);
   const [isTestCompleted, setTestCompletion] = useState(false);
+  const [isSettingsVisible, setSettingsVisibility] = useState(true);
 
   useEffect(
   () => {
@@ -46,8 +47,9 @@ function QuoteTest() {
   }
   return (
     <div className="typingbox app-section">
-      <Settings setQuoteLength={setQuoteLength} />
-      <TypingTest2 quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} />
+      
+      {isSettingsVisible && <Settings setQuoteLength={setQuoteLength} />}
+      <TypingTest2 quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} setSettingsVisibility={setSettingsVisibility}/>
       {/* <WPMGraph/> */}
     </div>
   );

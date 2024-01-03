@@ -3,19 +3,19 @@ import Chart from 'react-apexcharts';
 import React from 'react';
 
 
-function WPMGraph( {wpmArr, timeArr} ) {
+function WPMGraph( {props} ) {
 
     const splash = getComputedStyle(document.documentElement).getPropertyValue('--splash');
     const lightest = getComputedStyle(document.documentElement).getPropertyValue('--lightest');
 
-    if (timeArr.length > 40) {
+    if (props.timeArray.length > 40) {
 
-      const deltaX = Math.floor(timeArr.length / 20);
+      const deltaX = Math.floor(props.timeArray.length / 20);
       
-      for (let i = 0; i < timeArr.length; i++) {
+      for (let i = 0; i < props.timeArray.length; i++) {
         if (i % deltaX !== 0) {
           
-          timeArr[i] = undefined;
+          props.timeArray[i] = undefined;
         }
       }
     }
@@ -60,10 +60,10 @@ function WPMGraph( {wpmArr, timeArr} ) {
         },
         series: [{
           name: 'wpm',
-          data: wpmArr
+          data: props.wpmArray
         }],
         xaxis: {
-          categories: timeArr,
+          categories: props.timeArray,
           labels: {
             style: {
               colors: lightest

@@ -35,6 +35,7 @@ function TypingBox() {
   
   return (
     <div className="typingbox app-section">
+      Test
       <Settings setQuoteLength={setQuoteLength} />
       <TypingTest2 quote={quote} />
     </div>

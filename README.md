@@ -1,7 +1,5 @@
 # KeyDash
 
-## Welcome to KeyDash!
-
 KeyDash is a site inspired by [MonkeyType](https://monkeytype.com/) and [KeyBr](https://www.keybr.com/) 
 for the purpose of practicing web development through a means that I find interesting: typing tests!
 

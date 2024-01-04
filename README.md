@@ -14,6 +14,12 @@ Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
+#### Home Page
+[keydash-home](https://github.com/tezock/KeyDash/assets/105029396/e731d66c-1e85-4122-bcfd-7fd90c17f152)
+
+#### Test Completion Page
+![keydash-graph](https://github.com/tezock/KeyDash/assets/105029396/2d1bed58-dab6-47ab-a715-84a986305885)
+
 ## Features:
 
 -Scrolling up and down through typing test

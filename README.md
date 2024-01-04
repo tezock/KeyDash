@@ -1,20 +1,20 @@
-# [KeyDash](https://github.com/facebook/create-react-app)
+# KeyDash
 
 ## Welcome to KeyDash!
 
-KeyDash is a site inspired by [MonkeyType](https://monkeytype.com/) for the purpose of practicing
-fullstack development through a means that I find interesting: typing tests!
+KeyDash is a site inspired by [MonkeyType](https://monkeytype.com/) and [KeyBr](https://www.keybr.com/) 
+for the purpose of practicing web development through a means that I find interesting: typing tests!
 
 Below in this README, I'm largely going to document my changes and progress as I continue to work on
 the site through each release.
 
-## Release 1
+## Current Site
 
 Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
-### Features:
+## Features:
 
 -Scrolling up and down through typing test
 
@@ -22,7 +22,7 @@ Mostly working on the frontend via React.js.
 
 -Interface for completed tests presenting users with their results
 
-### Bugfixes:
+## Bugfixes:
 
 -Accounted for backspacing from the first character in the test. Text didn't render when backspace pressed at the beginning.
 
@@ -57,5 +57,8 @@ both
 
 -Built a a working version of the input field! However, I made it more 'stateful' than intended.
 Only up from here!
+
+-Refactoring in web dev is a pain.. first time using branches to manage version control! Previously
+I'd just made a copy of the file to keep the original version, but this method simplifies the process.
 
 

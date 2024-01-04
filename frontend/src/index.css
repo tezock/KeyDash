@@ -9,6 +9,9 @@
   --darkest: #242526;
   --splash: #ffbf00;
   --wrong: #d66258;
+  --font: 'Roboto Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif
 }
 
 .App {
@@ -243,9 +246,26 @@ div .word {
   color: var(--lightest);
 }
 
+/* Styles the footer */
+
 .footer {
   height: 15vh;
   width: 100%;
+  display: flex;
+  align-self: flex-end;
+  
+}
+
+.footer-content {
+  width: 70%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.footer-link {
+  color: var(--lightest);
 }
 
 /* Styling the typing test */
@@ -261,6 +281,7 @@ div .word {
 /* Styling the WPM Graph */
 
 .wpm-graph-section {
+  margin-top: 5px;
   width: 100%;
   height: 40vh;
 }
@@ -295,4 +316,32 @@ div .word {
   margin: auto;
 }
 
+/* Styles buttons at end of test */
+
+.test-buttons-container {
+  margin-top: 25px;
+  width: 100%;
+}
+
+.test-buttons-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 90%;
+  margin: auto;
+  background-color: var(--darkest);
+  border-radius: 7px;
+  padding: 5px 0px;
+}
+
+.test-button {
+  background-color: var(--darkest);
+  
+  border-radius: 7px;
+  font-size: 20px;
+  border-style: none;
+  font-family: var(--font);
+  color: var(--light);
+  cursor: pointer;
+}
 

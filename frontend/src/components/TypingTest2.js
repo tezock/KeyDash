@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import WPMGraph from "./WPMGraph";
 import Stats from "./Stats";
+import TestButtons from "./TestButtons";
 
 /**
  * TODO:
@@ -558,13 +559,18 @@ function TypingTest2({ quote, setTestCompletion, isTestCompleted, setSettingsVis
             time: timeArr[timeArr.length - 1],
         }
 
+        const buttonsProps = {
+            resetTest: resetTest,
 
+        }
+
+        console.log(buttonsProps.resetTest);
 
         return (
             <div id="test-container" className="typing-test">
                 <Stats props={statsProps} />
                 <WPMGraph props={graphProps} />
-                <button onClick={resetTest}>New Test</button>
+                <TestButtons props={buttonsProps} />
             </div>
         )
     }

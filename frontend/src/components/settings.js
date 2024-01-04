@@ -28,8 +28,7 @@ function Settings( {setQuoteLength} ) {
             </div>
           </div>  */}
 
-          <button className="setting-item">Quote Length</button>
-          <div className="vertical-rule"></div>
+          
           <button className="setting-item" onClick={handle50}>short</button>
           <button className="setting-item" onClick={handle125}>medium</button>
           <button className="setting-item" onClick={handle250}>long</button> 

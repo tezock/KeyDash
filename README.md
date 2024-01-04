@@ -10,8 +10,8 @@ Still Under Construction...
 Mostly working on the frontend via React.js.
 
 To run on your local machine, fork the repository then run the following:
-### `npm install'
-### 'npm start`
+### `npm install`
+### `npm start`
 
 #### Home Page
 ![keydash-home](https://github.com/tezock/KeyDash/assets/105029396/e731d66c-1e85-4122-bcfd-7fd90c17f152)

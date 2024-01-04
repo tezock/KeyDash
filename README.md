@@ -9,7 +9,7 @@ Still Under Construction...
 
 Mostly working on the frontend via React.js.
 
-To run on your local machine, fork the repository then run the following:
+To run on your local machine, fork the repository then run the following (with npm and react installed):
 ##### `npm install`
 ##### `npm start`
 

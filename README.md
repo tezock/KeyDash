@@ -5,9 +5,6 @@
 KeyDash is a site inspired by [MonkeyType](https://monkeytype.com/) and [KeyBr](https://www.keybr.com/) 
 for the purpose of practicing web development through a means that I find interesting: typing tests!
 
-Below in this README, I'm largely going to document my changes and progress as I continue to work on
-the site through each release.
-
 ## Current Site
 
 Still Under Construction...

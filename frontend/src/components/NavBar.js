@@ -24,22 +24,22 @@ function NavBar() {
               <NavLink to="/" className="nav-link">
                 Quote
               </NavLink>
-              <NavLink to="/n" className="nav-link">
+              <NavLink to="/a" className="nav-link">
                 Time
               </NavLink>
-              <NavLink to="/n" className="nav-link">
+              <NavLink to="/b" className="nav-link">
                 Priority
               </NavLink>
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/c" className="nav-link">
                 AI
               </NavLink>
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/d" className="nav-link">
                 Race
               </NavLink>
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/e" className="nav-link">
                 Stats
               </NavLink>
-              <NavLink to="/" className="nav-link">
+              <NavLink to="/f" className="nav-link">
                 About
               </NavLink>
             </div>

@@ -37,14 +37,7 @@ function QuoteTest() {
     console.log("Got New Quote!")
   }, [quoteLength, isTestCompleted])
   
-  if (isTestCompleted) {
-
-    return (
-      <div className="typingbox app-section">
-        Test is completed!
-      </div>
-    );
-  }
+  
   return (
     <div className="typingbox app-section">
       

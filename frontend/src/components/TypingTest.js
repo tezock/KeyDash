@@ -494,7 +494,8 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
         charList = null;
         wordList = null;
         setTestCompletion(true);
-        updateIndex(0);
+        setSettingsVisibility(true);
+
     }
 
     if (currIndex === 1) {

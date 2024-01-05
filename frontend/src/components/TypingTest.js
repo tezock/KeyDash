@@ -182,11 +182,11 @@ function addGraphData() {
         timeArr.push(timeArr.length);
     }
 
-    // console.log("----");
-    // console.log("When Added: " + numCorrect);
-    // console.log("WPM: " + currWPM)
-    // console.log("Time Diff: " + (Date.now() - startTime));
-    // console.log("----")
+    console.log("----");
+    console.log("When Added: " + numCorrect);
+    console.log("WPM: " + currWPM)
+    console.log("Time Diff: " + (Date.now() - startTime));
+    console.log("----")
 
     // console.log(wpmArr);
     // console.log(timeArr);
@@ -268,11 +268,11 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
 
                 if (key === expected) {
                     numCorrect++;
-                    console.log(numCorrect);
+                    // console.log(numCorrect);
 
                     if (numCorrect == 1) {
                         startTime = Date.now();
-                        console.log("Stored starting time!");
+                        // console.log("Stored starting time!");
                     }
                 }
 
@@ -432,20 +432,29 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
                 if (outer - inner < 0) {
 
                     const words = document.getElementById('character-content-box');
-                    const margin = parseInt(words.style.marginTop || '0px');
-                    words.style.marginTop = (margin + 40) + 'px';
+
+                    // only shift up if the words are rendered onto the screen
+                    if (!isNull(words)) {
+                        const margin = parseInt(words.style.marginTop || '0px');
+                        words.style.marginTop = (margin + 40) + 'px';
+                    }
+                    
                 }
             }
 
             // move cursor again in case the text went up
-            // move the cursor
-            if (!isNull(nextLetter)) {
-                cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
-                cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
-            } else {
-                cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
-                cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+            // move the cursor only if it's not null
+            if (!isNull(cursor)) {
+
+                if (!isNull(nextLetter)) {
+                    cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+                } else {
+                    cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+                }
             }
+            
         }
     }
 
@@ -454,6 +463,8 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
 
             const testBox = document.getElementById("test-container");
             
+            setSettingsVisibility(true);
+            setTestStatus(false);
 
             testBox.addEventListener("keydown", handleKeyDown);
 
@@ -469,17 +480,27 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
                 const nextWord = document.querySelector('.word.current');
                 const cursor = document.getElementById('carat');
         
-                // move the cursor
-                if (!isNull(nextLetter)) {
-                    cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
-                    cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
-                } else {
-                    cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
-                    cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
-                }
+                // move the cursor if it's not null
 
-                // focus on the text box
-                document.getElementById("main-test-container").focus();
+                if (!isNull(cursor)) {
+
+                    if (!isNull(nextLetter)) {
+                        cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                        cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+                    } else {
+                        cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                        cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+                    }
+                }
+                
+
+                // focus on the text box if it's not null
+                const testContainer = document.getElementById("main-test-container");
+                
+                if (!isNull(testContainer)) {
+
+                    testContainer.focus();
+                }
                     }
             return () => {
                 testBox.removeEventListener("keydown", handleKeyDown);;
@@ -493,8 +514,15 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
     function resetTest() {
         charList = null;
         wordList = null;
+        wpmArr = [];
+        timeArr = [];
+        numWrong = 0;
+        numCorrect = 0;
+        numExtra = 0;
+
         setTestCompletion(true);
-        setSettingsVisibility(true);
+        //setSettingsVisibility(true);
+        
 
     }
 
@@ -540,8 +568,8 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
         clearInterval(runningWPM)
         addGraphData();
         setSettingsVisibility(false);
-        console.log(wpmArr);
-        console.log(timeArr);
+        // console.log(wpmArr);
+        // console.log(timeArr);
 
         const graphProps = {
             wpmArray: wpmArr,
@@ -565,7 +593,7 @@ function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisi
 
         }
 
-        console.log(buttonsProps.resetTest);
+        
 
         return (
             <div id="test-container" className="typing-test">

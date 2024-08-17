@@ -107,6 +107,10 @@ nav .page-links {
   fill: var(--splash);
 }
 
+nav a.active {
+  color: var(--splash);
+}
+
 /* Style TypingBox */
 
 .typingbox {

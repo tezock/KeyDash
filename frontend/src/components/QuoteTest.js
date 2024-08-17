@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useState, useEffect } from 'react';
 import Settings from './Settings';
+
 import TypingTest from './TypingTest';
-import TypingTest2 from './TypingTest2';
 import WPMGraph from './WPMGraph';
 
 function QuoteTest() {
@@ -37,19 +37,12 @@ function QuoteTest() {
     console.log("Got New Quote!")
   }, [quoteLength, isTestCompleted])
   
-  if (isTestCompleted) {
-
-    return (
-      <div className="typingbox app-section">
-        Test is completed!
-      </div>
-    );
-  }
+  
   return (
     <div className="typingbox app-section">
       
       {isSettingsVisible && <Settings setQuoteLength={setQuoteLength} />}
-      <TypingTest2 quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} setSettingsVisibility={setSettingsVisibility}/>
+      <TypingTest quote={quote} setTestCompletion={setTestCompletion} isTestCompleted={isTestCompleted} setSettingsVisibility={setSettingsVisibility}/>
       {/* <WPMGraph/> */}
     </div>
   );

@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import WPMGraph from "./WPMGraph";
+import Stats from "./Stats";
+import TestButtons from "./TestButtons";
 
 /**
  * TODO:
@@ -40,6 +43,27 @@ const getCharList = (quote) => {
     
     return charList;
 }
+/**
+ * Returns a list representing each word in a received quote.
+ * @param {object} quote - quote response object
+ * @returns {list} - the list of each character
+ */
+const getWordList = (quote) => {
+
+    const quoteText = quote.content;
+
+    // return null if the request was invalid
+    if (quoteText === null || quoteText === undefined) {
+        return null;
+    }
+    
+    // split the quote to get each character
+    const wordList = quoteText.split(" ");
+    
+    return wordList;
+}
+
+
 
 /**
  * Updates the styling of each character when the user correctly progresses in the typing test.
@@ -109,13 +133,22 @@ const styleWrongCharTo = (currIndex) => {
     )
 }
 
+function formatWord(word) {
+
+    
+    return word.split('').map((item) => {
+        return (<span className="letter">{item}</span>);
+    })
+}
+
 function calculateWPM(startTime, endTime, charactersTyped) {
+
     // Calculate the total time in minutes
     const totalTimeInSeconds = (endTime - startTime) / 1000; // Convert milliseconds to seconds
     const totalTimeInMinutes = totalTimeInSeconds / 60;
   
     // Determine the total number of words typed
-    const wordsTyped = charactersTyped / 5 // average word length of 4.7
+    const wordsTyped = charactersTyped / 4.7 // average word length of 4.7
 
     // Calculate words per minute (WPM)
     const wpm = Math.round((wordsTyped * 60 * 1000) / ((endTime - startTime)));
@@ -124,90 +157,373 @@ function calculateWPM(startTime, endTime, charactersTyped) {
   }
 
 
-
 // stores the starting time.
 let startTime = Date.now();
+
+let runningWord = 1;
+
+function isNull(element) {
+    return (element === undefined || element === null);
+}
+
+let numWrong = 0;
+let numCorrect = 0;
+let numExtra = 0;
+let wpmArr = [];
+let timeArr = [];
+
+let runningWPM = 0;
+
+function addGraphData() {
+
+    const currWPM = calculateWPM(startTime, Date.now(), numCorrect);
+    if (currWPM !== 0) {
+        wpmArr.push(currWPM);
+        timeArr.push(timeArr.length);
+    }
+
+    console.log("----");
+    console.log("When Added: " + numCorrect);
+    console.log("WPM: " + currWPM)
+    console.log("Time Diff: " + (Date.now() - startTime));
+    console.log("----")
+
+    // console.log(wpmArr);
+    // console.log(timeArr);
+}
 
 /**
  * Typing Test component.
  * @param {object} quote - quote object
  * @returns typing test component
  */
-function TypingTest({ quote, setTestCompletion }) {
+function TypingTest({ quote, setTestCompletion, isTestCompleted, setSettingsVisibility }) {
 
-    // updates the current index through the quote
+    
+    
     const [currIndex, updateIndex] = useState(0);
+    const [currWord, updateWord] = useState(runningWord);
+    const [testCompletion, setTestStatus] = useState(false);
 
-    // stores the current values typed by the user
-    const [inputValue, updateInputValue] = useState('');
+    const testBoxReference = useRef();
 
-    // stores the current size of the 'hidden input' box for comparison.
-    const [oldInputSize, setInputSize] = useState(0);
+    // remember to delete
+    let charList = getCharList(quote);
+    
+    let wordList = getWordList(quote);
 
-    const charList = getCharList(quote);
+    // adds a class to a given element if it's not null
+    function addClass(element, name) {
 
-    /**
-     * Increment the state index variable.
-     */
-    const increment = () => {
-        updateIndex(() => currIndex + 1);
+        if (!isNull(element)) {
+            if (!element.className.includes(name)) {
+                element.className += ' ' + name;
+            }
+        }
     }
 
-    /**
-     * Decrement the state index variable.
-     */
-    const decrement = () => {
-        updateIndex(() => currIndex - 1);
-    }
-
-    /**
-     * Handle when the input box changes
-     * @param {event} event 
-     */
-    const handleInputChange = (event) => {
-
-        // store the current value in the input box
-        const newString = event.target.value;
-
-        // update the 'hidden text box's input value
-        updateInputValue(newString);
+    // removes a class from a given element if it's not null
+    function removeClass(element, name) {
+        if (!isNull(element)) {
+            element.className = element.className.replace(name, '');
+        }
         
-        // if a new character was added, do work
-        if (newString.length > oldInputSize) {
+    }
 
-            // if user typed the correct character, increment the index and update the styling.
-            if (newString.charAt(newString.length - 1) === charList[currIndex]) {
+    // check if a given element has a given class.
+    function hasClass(element, name) {
+        if (!isNull(element)) {
+            return element.className.includes(name);
+        }
+        return false;
+    }
 
-                increment();
-                styleCurrIndexTo(currIndex+1);
+
+    // handles the event when the keyboard is pressed.
+    const handleKeyDown = (event) => {
+
+        // the value typed
+        const key = event.key;
+
+        const currentWord = document.querySelector('.word.current');
+        const currentLetter = document.querySelector('.letter.current');
+
+        // store the expected letter if there is one. If not, store a spacebar as we have reached
+        // the end of a word.
+        const expected = !isNull(currentLetter) ? currentLetter.innerHTML : ' ';
+
+        const isLetter = key.length === 1 && key !== ' ';
+        const isSpace = key === ' ';
+        const isBackspace = key === 'Backspace';
+
+        // checks if the current letter is the first letter in the current word.
+        const isFirstLetter = !isNull(currentWord) && !isNull(currentLetter) ? currentLetter === currentWord.firstChild : false;
+
+        // handles when the user types a letter
+        if (isLetter) {
+            if (!isNull(currentLetter)) {
+
+                addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
+                removeClass(currentLetter, 'current');
+
+                if (key === expected) {
+                    numCorrect++;
+                    // console.log(numCorrect);
+
+                    if (numCorrect == 1) {
+                        startTime = Date.now();
+                        // console.log("Stored starting time!");
+                    }
+                }
+
+                else {
+                    numWrong++;
+                }
+
+                if (!isNull(currentLetter.nextSibling)) {
+                    addClass(currentLetter.nextSibling, 'current');
+                }
+                
+                // if there is no next letter and no next word, we have finished the test!
+                if (isNull(currentLetter.nextSibling) && isNull(currentWord.nextSibling)) {
+                    setTestStatus(true);
+                }
+            }
+            else {
+
+                const incorrectLetter = document.createElement('span');
+                incorrectLetter.innerHTML = key;
+                incorrectLetter.className ='letter incorrect extra';
+                currentWord.appendChild(incorrectLetter);
+                numExtra++;
+            }
+        }
+
+        // handles when the user types a space
+        if (isSpace) {
+
+            if (expected !== ' ') {
+
+                const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')];
+
+                lettersToInvalidate.forEach(
+                    (letter) => {
+                        addClass(letter, 'incorrect');
+                        
+                    }
+                )
+
+                numWrong += lettersToInvalidate.length;
+            } 
+
+            // if a space was expected, increment
+            else if (expected === ' ') {
+
+                numCorrect++;
             }
 
-            // if user typed the wrong character, do not increment the index and update the styling.
-            else {
-                
-                styleWrongCharTo(currIndex);
+            removeClass(currentWord, 'current');
+            addClass(currentWord.nextSibling, 'current');
+
+            if (!isNull(currentLetter)) {
+                removeClass(currentLetter, 'current');
+            }
+            addClass(currentWord.nextSibling.firstChild, 'current');
+            // increment();
+            // console.log("Increment!" + currWord);
+        }
+
+        // handles when the user presses backspace
+        if (isBackspace) {
+
+            // handles when the current letter is the first letter in the word
+            if (!isNull(currentLetter) && isFirstLetter && !isNull(currentWord.previousSibling)) {
+
+                // always decrement, as the previous character will be a space.
+                numCorrect--;
+
+                removeClass(currentWord, 'current');
+                addClass(currentWord.previousSibling, 'current');
+                removeClass(currentLetter, 'current');
+
+                // wait until done to remove this code. Was encountering error where it went back 1
+                // index too far.
+                // addClass(currentWord.previousSibling.lastChild, 'current');
+                // removeClass(currentWord.previousSibling.lastChild, 'incorrect')
+                // removeClass(currentWord.previousSibling.lastChild, 'correct');
+
+                // decrement();
+            }
+
+            // handles when current letter is not the first letter in the word
+            else if (!isNull(currentLetter) && !isFirstLetter) {
+
+                if (hasClass(currentLetter.previousSibling, "correct") && !hasClass(currentLetter.previousSibling, "incorrect")) {
+                    numCorrect--;
+                }
+                // move back one letter, invalidate letter
+                removeClass(currentLetter, 'current');
+                addClass(currentLetter.previousSibling, 'current');
+
+                removeClass(currentLetter.previousSibling, 'incorrect')
+                removeClass(currentLetter.previousSibling, 'correct');
+            }
+
+            // handles when the user backspaces from the last letter in the current word
+            else if (isNull(currentLetter)) {
+
+                // checks the current word's last child, as the current letter is null since it's a space!
+                if (hasClass(currentWord.lastChild, "correct") && !hasClass(currentWord.lastChild, "incorrect")) {
+                    numCorrect--;
+                }
+
+                addClass(currentWord.lastChild, 'current');
+                removeClass(currentWord.lastChild, 'incorrect')
+                removeClass(currentWord.lastChild, 'correct');
+
+                // if we've backspaced and the last letter is an EXTRA letter, remove it from the DOM!
+                if (hasClass(currentWord.lastChild, "extra")) {
+                    currentWord.removeChild(currentWord.lastChild);
+                }
             }
             
         }
 
-        // Only decrement index if the new string is shorter (backspace), it's not the first index,
-        // and the first character is not a space. This avoids going back to the previous word.
-        else if (newString.length < oldInputSize && currIndex > 0 && charList[currIndex - 1] !== ' ') {
+        // move cursor
+        const nextLetter = document.querySelector('.letter.current');
+        const nextWord = document.querySelector('.word.current');
+        const cursor = document.getElementById('carat');
 
-            decrement();
+        // scrolls the text down if necessary
+        if (!isNull(nextLetter)) {
+            const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
+            const inner = -nextLetter.getBoundingClientRect().top;
 
-            // update the character styling for currIndex - 2, 
-            styleCurrIndexTo(currIndex-1);
+            // if the user passes the second line
+            if (outer - inner >= 80) {
+
+                const words = document.getElementById('character-content-box');
+                const margin = parseInt(words.style.marginTop || '0px');
+                
+                if (!isNull(words)) {
+                    words.style.marginTop = (margin - 40) + 'px';
+                }
+            }
         }
 
-        // perform final update to the input's size
-        setInputSize(newString.length);
+        // move the cursor if it isn't null. If not checked, runtime error occurs.
+
+        if (!isNull(cursor)) {
+
+            if (!isNull(nextLetter)) {
+                cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+            } else {
+                cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+            }
+
+            // scroll the text up if necessary if the next (prev due to backspace) word isn't null.
+            if (!isNull(nextWord)) {
+                const outer = -document.getElementById("main-test-container").getBoundingClientRect().top;
+                const inner = -nextWord.getBoundingClientRect().top;
+
+                // if the user passes the second line
+                if (outer - inner < 0) {
+
+                    const words = document.getElementById('character-content-box');
+
+                    // only shift up if the words are rendered onto the screen
+                    if (!isNull(words)) {
+                        const margin = parseInt(words.style.marginTop || '0px');
+                        words.style.marginTop = (margin + 40) + 'px';
+                    }
+                    
+                }
+            }
+
+            // move cursor again in case the text went up
+            // move the cursor only if it's not null
+            if (!isNull(cursor)) {
+
+                if (!isNull(nextLetter)) {
+                    cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+                } else {
+                    cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                    cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+                }
+            }
+            
+        }
     }
 
+    useEffect(
+        () => {
+
+            const testBox = document.getElementById("test-container");
+            
+            setSettingsVisibility(true);
+            setTestStatus(false);
+
+            testBox.addEventListener("keydown", handleKeyDown);
+
+            runningWPM = setInterval(addGraphData, 1000);
+
+            if (!isNull(wordList)) {
+
+                addClass(testBox.querySelector('.word'), 'current');
+                addClass(testBox.querySelector('.letter'), 'current');
+
+                 // move cursor
+                const nextLetter = document.querySelector('.letter.current');
+                const nextWord = document.querySelector('.word.current');
+                const cursor = document.getElementById('carat');
+        
+                // move the cursor if it's not null
+
+                if (!isNull(cursor)) {
+
+                    if (!isNull(nextLetter)) {
+                        cursor.style.top = nextLetter.getBoundingClientRect().top + 'px';
+                        cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+                    } else {
+                        cursor.style.top = nextWord.getBoundingClientRect().top + 'px';
+                        cursor.style.left = nextWord.getBoundingClientRect().right + 'px';
+                    }
+                }
+                
+
+                // focus on the text box if it's not null
+                const testContainer = document.getElementById("main-test-container");
+                
+                if (!isNull(testContainer)) {
+
+                    testContainer.focus();
+                }
+                    }
+            return () => {
+                testBox.removeEventListener("keydown", handleKeyDown);;
+                clearInterval(runningWPM)
+                
+            };
+        },
+        [quote]
+    )
+
     function resetTest() {
+        charList = null;
+        wordList = null;
+        wpmArr = [];
+        timeArr = [];
+        numWrong = 0;
+        numCorrect = 0;
+        numExtra = 0;
 
         setTestCompletion(true);
-        updateIndex(0);
+        //setSettingsVisibility(true);
+        
+
     }
 
     if (currIndex === 1) {
@@ -217,7 +533,7 @@ function TypingTest({ quote, setTestCompletion }) {
     
     if (charList === null) {
         return (
-            <div className="typing-test">
+            <div id="test-container" className="typing-test">
                 Loading Quote.
             </div>
         )
@@ -226,10 +542,12 @@ function TypingTest({ quote, setTestCompletion }) {
     // if the last index was reached, return the WPM and a button to do a new test.
     if (currIndex === charList.length) {
 
+        
         return (
-            <div className="typing-test">
+            <div id="test-container" className="typing-test">
                 WPM: {calculateWPM(startTime, Date.now(), charList.length)}
                 <br/>
+                
                 <button onClick={resetTest}>New Test</button>
             </div>
         )
@@ -244,64 +562,82 @@ function TypingTest({ quote, setTestCompletion }) {
     if (input != null) {
         input.focus();
     }
+
+    if (testCompletion) {
+
+        clearInterval(runningWPM)
+        addGraphData();
+        setSettingsVisibility(false);
+        // console.log(wpmArr);
+        // console.log(timeArr);
+
+        const graphProps = {
+            wpmArray: wpmArr,
+            timeArray: timeArr,
+        }
+
+        const statsProps = {
+
+            wpm: calculateWPM(startTime, Date.now(), numCorrect),
+            accuracy: Math.floor((numCorrect * 100 / (numWrong + numCorrect))),
+            correct: numCorrect,
+            incorrect: numWrong,
+            extra: numExtra,
+            length: quote.content.length,
+            author: quote.author,
+            time: timeArr[timeArr.length - 1],
+        }
+
+        const buttonsProps = {
+            resetTest: resetTest,
+
+        }
+
+        
+
+        return (
+            <div id="test-container" className="typing-test">
+                <Stats props={statsProps} />
+                <WPMGraph props={graphProps} />
+                <TestButtons props={buttonsProps} />
+            </div>
+        )
+    }
     
     return (
 
-        <div className="typing-test">
+        <div id="test-container" className="typing-test">
             
-            WPM: {calculateWPM(startTime, Date.now(), currIndex)}
-            {/* {currIndex} */}
+            {/* WPM: {calculateWPM(startTime, Date.now(), currIndex)} */}
+
             <br/>
 
-            {/* <div id="carat"></div> */}
-            Hi!
-            <div className="test-characters">
-                <div className="test-characters-content">
-                    {/* <label 
-                        for="hidden-text-box" 
-                        id="test-characters"
-                    >  */}
-                    
-                        {
-                            charList.map(
-                                (item, index) => {
+            
+            
+            <div id="main-test-container" className="test-characters" tabIndex="0" ref={testBoxReference}>
+                <div id="character-content-box" className="test-characters-content">
 
-                                    if (index === 0) {
-                                        return (
-                                            <span 
-                                                key={index}
-                                                className="current"
-                                            >
-                                                {item}
-                                            </span>
-                                        )
-                                    }
-                                    return (
-                                    <span 
-                                        key={index}
-                                        className="untyped"
-                                    >
-                                        {item}
-                                    </span>
-                                )}
-                            )
-                        }
+                    {
+                        wordList.map(
+                            (item, index) => {
 
-                    {/* </label>
-
-                    <input 
-                        id="hidden-text-box" 
-                        width="0" 
-                        height="0" 
-                        type="text" 
-                        value={inputValue} 
-                        onChange={handleInputChange}
-                    /> */}
+                                return (
+                                    <div className="word">
+                                        {formatWord(item)}
+                                    </div>
+                                )
+                            
+                            }
+                        )
+                    }
                 </div>
+                <div id="carat"></div>
+                <div id="focus-error">Click here to focus</div>
             </div>
+            
         </div>
 
     );
 }
 
-export default TypingTest
+export default TypingTest;

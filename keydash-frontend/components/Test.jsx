@@ -3,13 +3,13 @@ import cx from 'classnames';
 
 
 
-const Test = ({quote, isLoading}) => {
+const Test = ({quote, isLoading, setTestCompletion}) => {
 
     const currLetter = useRef(null);
     const currWord = useRef(null);
     const [letterIndex, setLetterIndex] = useState(0);
     const [wordIndex, setWordIndex] = useState(0);
-    const [words, setWords] = useState(null);
+    const [words, setWords] = useState([]);
 
     // update the test to the beginning state when the quote changes
     useEffect(() => {
@@ -32,6 +32,12 @@ const Test = ({quote, isLoading}) => {
         setLetterIndex(0)
     }, [quote])
 
+    
+
+    // // if the last word is reached completed or skipped, the test is completed.
+    // if (skippedLastWord || finishedLastWord) {
+    //     setTestCompletion(true);
+    // }
     
 
 
@@ -105,12 +111,13 @@ const Test = ({quote, isLoading}) => {
             }
             else {
 
-                const isLastLetter = letterIndex == words[wordIndex].length;
-
+                const expectedSpace = letterIndex == words[wordIndex].length;
+                const isLastLetter = letterIndex == words[wordIndex].length - 1;
+                const isLastWord = wordIndex == words.length - 1;
                 if (pressedKey == expectedKey) {
                     
                     // is a space, go to next word if possible
-                    if (isLastLetter) {
+                    if (expectedSpace) {
 
                         // style the next selected letter if there are words left
                         if (wordIndex + 1 < tempWords.length) {
@@ -119,6 +126,11 @@ const Test = ({quote, isLoading}) => {
                         setWordIndex(wordIndex + 1);
                         setLetterIndex(0);
 
+                    }
+
+                    // if we finished the last letter of the last word, we finished the test
+                    else if (isLastLetter && isLastWord) {
+                        setTestCompletion(true);
                     }
 
                     else {
@@ -135,7 +147,7 @@ const Test = ({quote, isLoading}) => {
                 // alphanumeric characters have a length of 1. Ignore all other
                 // characters except space (skip to next word)
                 else if (pressedKey.length == 1 || pressedKey == ' ') {
-                    if (isLastLetter) {
+                    if (expectedSpace) {
 
                         tempWords[wordIndex].push(
                             {
@@ -160,6 +172,13 @@ const Test = ({quote, isLoading}) => {
                             tempWords[wordIndex + 1][0].status = 'selected';
                         }
 
+                        // if we're skipping the last word, we're done with the test
+                        const isLastWord = wordIndex == words.length - 1;
+                        if (isLastWord) {
+                            setTestCompletion(true);
+                        }
+
+
                         setLetterIndex(0);
                         setWordIndex(wordIndex + 1); 
                     }
@@ -174,6 +193,8 @@ const Test = ({quote, isLoading}) => {
                     }
                 }
             }
+
+            
 
             // update words state for the next render
             setWords(tempWords);

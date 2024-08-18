@@ -9,6 +9,7 @@ const TestPage = () => {
     const [quote, setQuote] = useState(null);
     const [getNewTest, setGetNewTest] = useState(true)
     const hasFetchedQuote = useRef(false);
+    const [isTestComplete, setTestCompletion] = useState(false);
 
     // gets a new quote
     const fetchQuote = async () => {
@@ -39,7 +40,11 @@ const TestPage = () => {
       }
     }, [getNewTest, hasFetchedQuote])
 
-    
+    const handleRestartTest = () => {
+
+      setTestCompletion(false);
+      setGetNewTest(true);
+    }
     
     if (error) {
         return (
@@ -50,9 +55,18 @@ const TestPage = () => {
         )
     }
 
+    if (isTestComplete) {
+      return (
+        <>
+          <p>Test is complete, here are stats</p>
+          <button onClick={handleRestartTest}>Click to restart</button>
+        </>
+      )
+    }
+
     return (
         <>
-        <Test quote={quote} isLoading={isLoading}/>
+        <Test quote={quote} isLoading={isLoading} setTestCompletion={setTestCompletion}/>
         </>
     )
 }
